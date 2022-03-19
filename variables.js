@@ -45,5 +45,8 @@ const dropdownContacts = ['Телефон', 'Доп. телефон', 'Email', '
 
 const folder = './assets/contacts/';
 const folderBtns = './assets/img/';
+const api = 'http://localhost:3000/';
+const getListClient = 'api/clients';
+const postClient = 'api/clients';
 
 export default { listTitleTable, testClients, icons, folder, folderBtns,dropdownContacts };
