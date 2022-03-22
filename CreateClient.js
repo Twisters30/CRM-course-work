@@ -3,6 +3,7 @@ import Handlers from './Handlers.js';
 import UiEffects from './Ui-effects.js';
 import path from './variables.js';
 import TableBody from './TableBody.js';
+import Helper from './Helper.js';
 
 export default class CreateClient {
     constructor(client) {
@@ -26,7 +27,7 @@ export default class CreateClient {
         return label;
     }
 
-    createBtnSaveClient() {
+     createBtnSaveClient() {
         const wrap = document.createElement('div');
         const btnSave = document.createElement('button');
         wrap.classList.add('d-flex', 'justify-content-center');
@@ -37,6 +38,8 @@ export default class CreateClient {
         btnSave.style.backgroundColor = '#9873FF';
         btnSave.style.padding = '12.5px 35px';
         btnSave.style.marginBottom = '5px';
+        btnSave.style.transition = '300ms';
+        btnSave.id = 'btn-save';
         Handlers.clickSaveClientData(btnSave);
         wrap.append(btnSave);
         return wrap;
@@ -110,10 +113,11 @@ export default class CreateClient {
         selectorDropdown.style.transition = '300ms';
         selectorDropdown.style.minWidth = '100%';
         selectorDropdown.style.padding = '0';
+        selectorDropdown.style.pointerEvents = 'none';
         iconСhevron.style.transition = '300ms';
         wrapDropdownBtn.append(btnOpenDropdown, selectorDropdown, iconСhevron);
         this.crateSelectorDropdown(selectorDropdown, path.dropdownContacts);
-        Handlers.clickDropdown(wrapDropdownBtn);
+        Handlers.clickShowDropdown(wrapDropdownBtn);
         Handlers.clickSelectContact(selectorDropdown);
         return wrapDropdownBtn;
     }
@@ -135,7 +139,7 @@ export default class CreateClient {
         return wrapCloseBtn;
     }
 
-    createContact(sectionContacts) {
+    createContact(sectionContacts, type = 'phone', value = null) {
         const wrapContact = document.createElement('li');
         const deleteContactBtn = this.crateBtnDeleteContact();
         const input = document.createElement('input');
@@ -144,12 +148,14 @@ export default class CreateClient {
         wrapContact.classList.add('d-flex', 'align-items-center', 'justify-content-between');
         wrapContact.style.marginBottom = '25px';
         wrapContact.style.border = '1px solid #C8C5D1';
-        input.setAttribute('data-phone', '+79215778900');
+        input.setAttribute(`data-${type}`, value || '+7921321321');
         input.style.padding = '8px 12px';
         input.style.backgroundColor = '#f4f3f6';
         input.style.width = '100%';
         input.style.height = '100%';
         input.style.border = '1px solid #C8C5D1';
+        input.value = value;
+        dropdown.querySelector('button').textContent = Helper.parseForBtnText(type);
         Handlers.clickDeleteContact(deleteContactBtn, sectionContacts);
         wrapContact.append(dropdown, input, deleteContactBtn);
         sectionContacts.prepend(wrapContact);
@@ -180,9 +186,9 @@ export default class CreateClient {
         const title = document.createElement('h2');
         const titleWrap = document.createElement('div');
         const id = document.createElement('span');
-        const familyInput = this.createInput('Фамилия*', 'input-family');
+        const surnameInput = this.createInput('Фамилия*', 'input-family');
         const nameInput = this.createInput('Имя*', 'input-name');
-        const middleNameInput = this.createInput('Отчество', 'input-middleName');
+        const lastNameInput = this.createInput('Отчество', 'input-middleName');
         const closeBtn = Handlers.closeModalBtn();
         const { containerContacts, btnAddContacts , listContacts} = this.createSectionContacts();
         const btnSave = this.createBtnSaveClient();
@@ -196,21 +202,37 @@ export default class CreateClient {
         container.style.zIndex = '999';
         container.querySelector('.col').style.flexGrow = '0';
         titleWrap.style.marginBottom = '16px';
+        form.id = 'form-client';
         form.classList.add('bg-white');
         form.style.padding = '24px 30px 25px 30px';
         id.classList.add('d-block');
+        id.id = 'id-client';
         titleWrap.classList.add('d-flex', 'align-items-center');
         title.classList.add('mr-2');
         title.textContent = 'Изменить данные';
-        id.textContent = 'id: test123';
+        id.textContent = '';
         id.style.color = '#B0B0B0';
         form.addEventListener('submit', e => e.preventDefault());
         titleWrap.append(title,id)
         container.querySelector('.col').append(form);
-        form.append(titleWrap, familyInput, nameInput, middleNameInput, closeBtn, containerContacts, btnSave, btnDelete);
+        form.append(titleWrap, surnameInput, nameInput, lastNameInput, closeBtn, containerContacts, btnSave, btnDelete);
         Handlers.clickCloseModalBtn(closeBtn);
-        Handlers.clickAddContact(btnAddContacts, listContacts);
+        Handlers.clickAddContact(btnAddContacts.querySelector('button'), listContacts);
         UiEffects.slideOut(container);
+        if (this.client) {
+            this.fillClientData(nameInput, lastNameInput, surnameInput, id, containerContacts)
+        }
         box.append(container);
+    }
+
+    fillClientData(nameInput, lastNameInput, surnameInput, id, containerContacts) {
+        nameInput.querySelector('input').value = this.client.name;
+        lastNameInput.querySelector('input').value = this.client.lastName;
+        surnameInput.querySelector('input').value = this.client.surname;
+        id.textContent = 'id:' + this.client.id;
+
+        this.client.contacts.forEach((el) => {
+            this.createContact(containerContacts, el.type, el.value);
+        })
     }
 }

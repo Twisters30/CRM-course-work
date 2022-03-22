@@ -1,48 +1,74 @@
 export default class Helper {
+
+    static parseDate(ell) {
+        const date = new Date(ell)
+        const day = `${(date.getDate() + 1) < 10 ? '0' +(date.getDate() + 1) : (date.getDate() + 1)}`;
+        const month = `${(date.getMonth() + 1) < 10 ? '0' +(date.getMonth() + 1) : (date.getMonth() + 1)}`;
+        const year = date.getFullYear();
+        const hours = `${(date.getHours() + 1) < 10 ? '0' +(date.getHours() + 1) : (date.getHours() + 1)}`;
+        const minutes =`${(date.getMinutes() + 1) < 10 ? '0' +(date.getMinutes() + 1) : (date.getMinutes() + 1)}`;
+        const time = hours + '.' + minutes;
+        const parseDate = day + '.' + month + '.' + year + '-' + time;
+        return parseDate;
+    }
+
+    static parseResponseClientList(responseClients) {
+        const clients = [];
+        responseClients.forEach((ell) => {
+            const client = {
+                id: ell.id,
+                fio: `${ell.surname + ' ' + ell.name + ' ' + ell.lastName}` ,
+                createdAt: Helper.parseDate(ell.createdAt),
+                updatedAt: Helper.parseDate(ell.updatedAt),
+                contacts : ell.contacts
+
+            }
+            clients.push(client);
+        })
+        return clients;
+    }
+
     static parseAttributeInput(btn) {
         switch (btn.textContent) {
             case 'Телефон': {
                 return 'phone';
-                break;
             }
             case 'Доп. телефон': {
                 return 'addPhone';
-                break;
             }
             case 'Email': {
                 return 'email';
-                break;
             }
             case 'Vk': {
                 return 'vk';
-                break;
             }
             case 'Facebook': {
                 return 'facebook';
-                break;
             }
             default : return 'subtract';
         }
     }
 
-    static createIdClient(idContainer) {
-        if (idContainer) {
-            return
-        } else {
-            return new Date().valueOf();
+    static parseForBtnText(type) {
+        switch (type) {
+            case 'phone': {
+                return 'Телефон';
+            }
+            case 'addPhone': {
+                return 'Доп. телефон';
+            }
+            case 'email': {
+                return 'Email';
+            }
+            case 'vk': {
+                return ' Vk';
+            }
+            case 'facebook': {
+                return ' Facebook';
+            }
+            default : return 'subtract';
         }
     }
-
-    static createDate() {
-        const date = new Date();
-        const day = `${date.getDate() < 10 ?  '0' + date.getDate() :date.getDate()}`;
-        const month = `${(date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)}`;
-        const year = date.getFullYear();
-        const time = date.getHours() + '.' + date.getMinutes();
-        const dateOfCreation = `${day + '.' + month + '.' + year + '-' + time}`
-        return dateOfCreation;
-    }
-
 
     static checkLimitContacts(btnAddContact, contactsWrapper) {
         let i = contactsWrapper.children.length;
@@ -59,6 +85,21 @@ export default class Helper {
             setTimeout(() => {
                 btnAddContact.style.opacity = '1';
             },300)
+        }
+    }
+
+    static titlePlugPage() {
+        const title = document.createElement('h2');
+        const table = document.querySelector('#table-client');
+        const tableBody = document.querySelector('#table-body');
+        const app =document.querySelector('#app');
+        title.id = 'title-plug';
+        title.classList.add('text-center', 'mb-5');
+        title.textContent = 'Сдесь пока ничего нет';
+        if (tableBody.children.length === 0) {
+            table.insertAdjacentElement('beforebegin', title)
+        } else if (app.querySelector('#title-plug')) {
+            app.querySelector('#title-plug').remove();
         }
     }
 }

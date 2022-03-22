@@ -2,12 +2,72 @@ import path from './variables.js';
 import CreateClient from './CreateClient.js';
 import Helper from './Helper.js';
 import FormHandlers from './FormHandlers.js';
+import Fetch from './Fetch.js';
+import TableController from './conrollers/TableController.js';
+import UiEffects from './Ui-effects.js';
 
 export default class Handlers {
+    static async clickEditClient(bodyTable) {
+        bodyTable.addEventListener('click', async (e) => {
+            const target = e.target;
+            if (target.closest('.btn-edit')) {
+                const id = target.parentElement.parentElement.parentElement.querySelector('.id-client');
+                const { status , dataClient} = await Fetch.getClientData(id.id);
+                if (status === 200 || status === 201) {
+                    const modalClient = new CreateClient(dataClient);
+                    modalClient.createForm(document.querySelector('#app'));
+                    setTimeout(() => {
+                        document.querySelector('.modal-form').style.transform = 'translate(-50%, -50%)';
+                    },100)
+                }
+            }
+        })
+    }
 
-    static clickSaveClientData(btn) {
-        btn.addEventListener('click', () => {
-            FormHandlers.submitFormClient();
+    static async clickDeleteClientInTable(bodyTable) {
+        bodyTable.addEventListener('click', async (e) => {
+            const target = e.target;
+            if (target.closest('.btn-delete')) {
+                const id = target.parentElement.parentElement.parentElement.querySelector('.id-client');
+                const status = await Fetch.deleteClient(id.id);
+                if (status === 200 || status === 201) {
+                    const clients = await Fetch.getClients();
+                    TableController.refreshTable(clients);
+                    TableController.hideTable();
+                    Helper.titlePlugPage();
+                } else {
+                    console.log(status, 'Ошибка при удалении');
+                }
+            }
+        })
+    }
+
+    static async clickSaveClientData(btn) {
+        btn.addEventListener('click', async () => {
+            const id = document.querySelector('#id-client').textContent.split(':')[1];
+            const client = FormHandlers.submitFormClient();
+            const btnSubmit = document.querySelector('#btn-save');
+            if (id) {
+                const statusCode = await Fetch.updateClient(client, id);
+                if (statusCode === 201 || statusCode  === 200) {
+                    UiEffects.btnSuccess(btnSubmit);
+                } else {
+                    UiEffects.btnError(btnSubmit);
+                }
+            } else {
+                const statusCode = await Fetch.postClient(client);
+                if (statusCode === 201 || statusCode  === 200) {
+                    TableController.hideTable();
+                    FormHandlers.clearForm();
+                    UiEffects.btnSuccess(btnSubmit);
+                    Helper.titlePlugPage();
+                } else {
+                    console.log('Error status code', statusCode);
+                    UiEffects.btnError(btnSubmit);
+                }
+            }
+            const clients = await Fetch.getClients();
+            TableController.refreshTable(clients);
         })
     }
 
@@ -42,18 +102,6 @@ export default class Handlers {
         })
     }
 
-    static handlerTooltip() {
-        let icons = document.querySelector('.icons__list');
-        icons.addEventListener('mouseover', e => {
-            if (e.target.tagName !== 'SPAN' && e.target.classList !== 'icon__contact') return
-            if (!e.target.nextSibling) return;
-            e.target.nextSibling.style.opacity = '1'
-            e.target.addEventListener('mouseout', function() {
-                this.nextSibling.style.opacity = '0';
-            })
-        })
-    }
-
     static clickCloseModalBtn(btn) {
         btn.addEventListener('click', function () {
             document.querySelector('.modal-form').style.transform = 'translate(-50%, -200%)';
@@ -63,7 +111,7 @@ export default class Handlers {
         })
     }
 
-    static clickDropdown(btn) {
+    static clickShowDropdown(btn) {
         btn.addEventListener('click', function (e) {
             if (e.target.tagName === 'BUTTON' && e.target.nextSibling.style.opacity === '0') {
                 e.target.nextSibling.style.opacity = '1';
@@ -107,15 +155,17 @@ export default class Handlers {
     static clickSelectContact(ul) {
         ul.addEventListener('click', function (e) {
             const target = e.target;
+            if (target.tagName === 'UL') return;
             if (target.closest('li')) {
                 let btnDropdown = target.parentElement.previousSibling;
+                console.log(btnDropdown)
                 let input = btnDropdown.parentElement.nextSibling;
                 btnDropdown.textContent = target.textContent;
                 const dataText = Helper.parseAttributeInput(btnDropdown);
                 if (input.hasAttributes()) {
                     const attributes = input.attributes;
                     for (let i = 0; i < attributes.length;i++) {
-                        if (attributes[i].name === 'style') {
+                        if (attributes[i].name === 'style' || attributes[i].name === 'class') {
                             continue;
                         } else {
                             input.removeAttribute(attributes[i].name)

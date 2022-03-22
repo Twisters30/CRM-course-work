@@ -1,4 +1,6 @@
 import path from './variables.js';
+import UiEffects from './Ui-effects.js';
+import Handlers from './Handlers.js';
 
 export default class TableBody {
     constructor(clients) {
@@ -10,7 +12,6 @@ export default class TableBody {
         tr.classList.add('text-center');
         return tr;
     }
-
 
     createIconContact(iconPath,value,type) {
         const link = document.createElement('a');
@@ -58,41 +59,43 @@ export default class TableBody {
     }
 
     createBtnControl(btnEditText,btnDeleteText) {
+        const td = document.createElement('td');
         const btnEdit = document.createElement('button');
         const btnDelete = document.createElement('button');
         const wrap = document.createElement('div');
-        btnEdit.classList.add('btn', 'd-flex', 'flex-row-reverse', 'align-items-center');
-        btnDelete.classList.add('btn', 'd-flex', 'flex-row-reverse', 'align-items-center');
+        td.classList.add('align-middle', 'bg-white');
+        btnEdit.classList.add('btn', 'd-flex', 'flex-row-reverse', 'align-items-center', 'btn-edit');
+        btnDelete.classList.add('btn', 'd-flex', 'flex-row-reverse', 'align-items-center', 'btn-delete');
         wrap.classList.add('d-flex')
         btnEdit.textContent = btnEditText;
         btnDelete.textContent = btnDeleteText;
         btnEdit.append(TableBody.createIcon('14','12', path.icons.edit));
         btnDelete.append(TableBody.createIcon('14','12', path.icons.delete));
         wrap.append(btnEdit,btnDelete);
-        return wrap;
+        td.append(wrap);
+        return td;
     }
 
     createContactsCell(value, ul) {
         value.forEach((el) => {
-            for(const [icon,val] of Object.entries(el)) {
-                if (icon === 'vk') {
-                    const iconPath = `${ path.folder + path.icons.vk }`;
-                    this.createListItem(ul, this.createIconContact(iconPath, val))
-                } else if (icon === 'fb') {
-                    const iconPath = `${ path.folder + path.icons.fb }`;
-                    this.createListItem(ul, this.createIconContact(iconPath, val))
-                } else if (icon === 'phone') {
-                    const iconPath = `${ path.folder + path.icons.phone }`;
-                    this.createListItem(ul, this.createIconContact(iconPath, val, 'phone'))
-                } else if (icon === 'email') {
-                    const iconPath = `${ path.folder + path.icons.email }`;
-                    this.createListItem(ul, this.createIconContact(iconPath, val, 'email'))
-                } else if (icon === 'subtract') {
-                    const iconPath = `${ path.folder + path.icons.subtract }`;
-                    this.createListItem(ul, this.createIconContact(iconPath, val))
-                }
+            if (el.type === 'vk') {
+                const iconPath = `${ path.folder + path.icons.vk }`;
+                this.createListItem(ul, this.createIconContact(iconPath, el.value))
+            } else if (el.type === 'facebook') {
+                const iconPath = `${ path.folder + path.icons.fb }`;
+                this.createListItem(ul, this.createIconContact(iconPath, el.value))
+            } else if (el.type === 'phone') {
+                const iconPath = `${ path.folder + path.icons.phone }`;
+                this.createListItem(ul, this.createIconContact(iconPath, el.value, 'phone'))
+            } else if (el.type === 'email') {
+                const iconPath = `${ path.folder + path.icons.email }`;
+                this.createListItem(ul, this.createIconContact(iconPath, el.value, 'email'))
+            } else if (el.type === 'subtract') {
+                const iconPath = `${ path.folder + path.icons.subtract }`;
+                this.createListItem(ul, this.createIconContact(iconPath, el.value))
             }
         })
+        UiEffects.hoverTooltip(ul);
     }
 
     createCell(key,value,container) {
@@ -102,12 +105,17 @@ export default class TableBody {
         const wrap = document.createElement('div');
         wrap.classList.add('d-flex');
         ul.classList.add('icons__list', 'd-flex');
+        ul.id = 'contact-list';
         ul.style.listStyleType = 'none';
         td.classList.add('align-middle', 'bg-white');
 
-        if (key === 'id') wrap.textContent = value;
+        if (key === 'id') {
+            wrap.textContent = value;
+            td.id = value;
+            td.classList.add('id-client');
+        } ;
         if (key === 'fio') wrap.textContent = value;
-        if (key === 'dateOfCreation' || key === 'dateOfRefactor') {
+        if (key === 'createdAt' || key === 'updatedAt') {
             const time = value.split('-')[1];
             span.textContent = time;
             span.style.color = '#B0B0B0';
@@ -119,9 +127,6 @@ export default class TableBody {
             this.createContactsCell(value,ul);
             wrap.append(ul);
         }
-        if (key === 'btns') {
-            td.append(this.createBtnControl(value.split('-')[0], value.split('-')[1]));
-        }
         td.append(wrap);
         container.append(td);
     }
@@ -130,15 +135,19 @@ export default class TableBody {
         for (const [key, value] of Object.entries(client)) {
             this.createCell(key,value,container);
         }
+        container.append(this.createBtnControl('Изменить', 'Удалить'));
     }
 
     createTableBody() {
         const tBody = document.createElement('tbody');
+        tBody.id = 'table-body';
         this.clients.forEach(el => {
             const tr = this.createTableRow();
             this.fillDataClient(el,tr);
             tBody.append(tr)
         })
+        Handlers.clickDeleteClientInTable(tBody);
+        Handlers.clickEditClient(tBody);
         return tBody;
     }
 }

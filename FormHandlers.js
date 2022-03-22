@@ -1,10 +1,5 @@
-import Helper from './Helper.js';
 
 export default class FormHandlers {
-    constructor(client) {
-        this.client = client;
-    }
-
     static submitFormClient() {
         const inputName = document.querySelector('#input-name');
         const inputMiddleName = document.querySelector('#input-middleName');
@@ -14,21 +9,30 @@ export default class FormHandlers {
 
         for(let i = 0; i < inputContacts.length;i++) {
             const attr = inputContacts[i].attributes;
-            if (attr === 'style') {
-                continue;
-            } else {
-                contacts.push({attr:inputContacts[i].value})
+            for(let k = 0; k < attr.length; k++) {
+                if (attr[k].name === 'style' || attr[k].name === 'class') {
+                    continue;
+                } else {
+                    const typeAttr = attr[k].name.split('-')[1];
+                    console.log(typeAttr, inputContacts[i].value)
+                    contacts.push({ type: typeAttr, value: inputContacts[i].value })
+                }
             }
         }
 
         const formData = {
-            id: Helper.createIdClient(false),
-            fio: inputFamily.value + inputName.value + inputMiddleName.value,
-            dateOfCreation: Helper.createDate(),
-            dateOfRefactor: 'не редактировалось',
-            contacts: contacts,
-            btns: 'Изменить-Удалить'
+            name: inputName.value,
+            surname: inputFamily.value,
+            lastName: inputMiddleName.value,
+            contacts: contacts
         }
-        console.log(formData)
+        return formData;
+    }
+    static clearForm() {
+        const formCreateClient = document.querySelector('#form-client');
+        const inputsForm = formCreateClient.querySelectorAll('input');
+        const contactList = document.querySelector('#contact-list');
+        inputsForm.forEach((el) => el.value = '');
+        contactList.innerHTML = '';
     }
 }

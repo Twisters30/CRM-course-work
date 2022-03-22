@@ -11,18 +11,30 @@ const testClients = [
     {
         id: 1,
         fio: 'Максимов Александр Сергеевич',
-        dateOfCreation: '14.03.2022-20:22',
-        dateOfRefactor: '15.04.2022-22:32',
+        createdAt: '14.03.2022-20:22',
+        updatedAt: '15.04.2022-22:32',
         contacts :
             [
-                { vk: 'https://vk.com/twisters30'},
-                { tg: 'https://t.me/Twisters30'},
-                { phone: '+79212585685'},
-                { email: 'tvist821@mail.ru'},
-                { fb: 'fb@123.en'},
-                { subtract: 'info'}
-            ],
-        btns: 'Изменить-Удалить'
+                {
+                    type: 'vk',
+                    value: 'https://vk.com/twisters30'
+                },
+                {   type: 'phone',
+                    value: '+79212585685',
+                },
+                {
+                    type: 'email',
+                    value: 'tvist821@mail.ru'
+                },
+                {
+                    type: 'facebook',
+                    value: 'fb@123.en'
+                },
+                {
+                    type: 'subtract',
+                    value: 'info'
+                }
+            ]
     }
 ]
 
@@ -42,11 +54,29 @@ const icons = {
 }
 
 const dropdownContacts = ['Телефон', 'Доп. телефон', 'Email', 'Vk', 'Facebook']
-
+// Path for root icons
 const folder = './assets/contacts/';
 const folderBtns = './assets/img/';
+
+// request
 const api = 'http://localhost:3000/';
 const getListClient = 'api/clients';
 const postClient = 'api/clients';
+const deleteClient = 'api/clients/';
+const getClient = 'api/clients/';
+const patchClient = 'api/clients/'
 
-export default { listTitleTable, testClients, icons, folder, folderBtns,dropdownContacts };
+export default {
+    listTitleTable,
+    testClients,
+    icons,
+    folder,
+    folderBtns,
+    dropdownContacts,
+    api,
+    getListClient,
+    postClient,
+    deleteClient,
+    getClient,
+    patchClient
+};
