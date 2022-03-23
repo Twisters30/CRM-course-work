@@ -15,19 +15,25 @@ export default class Handlers {
                 const { status , dataClient} = await Fetch.getClientData(id.id);
                 if (status === 200 || status === 201) {
                     const modalClient = new CreateClient(dataClient);
-                    modalClient.createForm(document.querySelector('#app'));
-                    setTimeout(() => {
-                        document.querySelector('.modal-form').style.transform = 'translate(-50%, -50%)';
-                    },100)
+                    const modalWrap = modalClient.createForm(document.querySelector('#app'));
+                    UiEffects.slideOut(modalWrap)
                 }
             }
         })
     }
 
-    static async clickDeleteClientInTable(bodyTable) {
-        bodyTable.addEventListener('click', async (e) => {
+    static closeModal(wrapModal) {
+        wrapModal.style.transform = 'translate(-50%, -200%)';
+        setTimeout(() => {
+            wrapModal.remove();
+        },200)
+    }
+
+    static clickConfirmDelete(wrapModal, btnDeleteModal) {
+        wrapModal.addEventListener('click', async (e) => {
             const target = e.target;
-            if (target.closest('.btn-delete')) {
+            const idBtnDelete = `${ '#' + btnDeleteModal.id}`
+            if (target.closest(idBtnDelete)) {
                 const id = target.parentElement.parentElement.parentElement.querySelector('.id-client');
                 const status = await Fetch.deleteClient(id.id);
                 if (status === 200 || status === 201) {
@@ -35,6 +41,7 @@ export default class Handlers {
                     TableController.refreshTable(clients);
                     TableController.hideTable();
                     Helper.titlePlugPage();
+                    Handlers.closeModal(wrapModal);
                 } else {
                     console.log(status, 'Ошибка при удалении');
                 }
@@ -42,25 +49,34 @@ export default class Handlers {
         })
     }
 
-    static async clickSaveClientData(btn) {
-        btn.addEventListener('click', async () => {
+    static clickDeleteClientInTable(bodyTable) {
+        bodyTable.addEventListener('click', async (e) => {
+            const target = e.target;
+            if (target.closest('.btn-delete')) {
+                const { wrapModal, btnDeleteModal } = TableController.createModalConfirm();
+                UiEffects.slideOut(wrapModal);
+                Handlers.clickConfirmDelete(wrapModal, btnDeleteModal.querySelector('button'));
+            }
+        })
+    }
+
+    static async clickSaveClientData(btnSubmit) {
+        btnSubmit.addEventListener('click', async () => {
             const id = document.querySelector('#id-client').textContent.split(':')[1];
-            const client = FormHandlers.submitFormClient();
-            const btnSubmit = document.querySelector('#btn-save');
+            const clientData = FormHandlers.submitFormClient();
             if (id) {
-                const statusCode = await Fetch.updateClient(client, id);
+                const statusCode = await Fetch.updateClient(clientData, id);
                 if (statusCode === 201 || statusCode  === 200) {
                     UiEffects.btnSuccess(btnSubmit);
                 } else {
                     UiEffects.btnError(btnSubmit);
                 }
             } else {
-                const statusCode = await Fetch.postClient(client);
+                const statusCode = await Fetch.postClient(clientData);
                 if (statusCode === 201 || statusCode  === 200) {
-                    TableController.hideTable();
                     FormHandlers.clearForm();
                     UiEffects.btnSuccess(btnSubmit);
-                    Helper.titlePlugPage();
+
                 } else {
                     console.log('Error status code', statusCode);
                     UiEffects.btnError(btnSubmit);
@@ -68,6 +84,8 @@ export default class Handlers {
             }
             const clients = await Fetch.getClients();
             TableController.refreshTable(clients);
+            TableController.hideTable();
+            Helper.titlePlugPage();
         })
     }
 
@@ -95,19 +113,14 @@ export default class Handlers {
     static clickCreateClient(btn) {
         const modal = new CreateClient();
         btn.addEventListener('click', () => {
-            modal.createForm(document.querySelector('#app'))
-            setTimeout(() => {
-                document.querySelector('.modal-form').style.transform = 'translate(-50%, -50%)';
-            },100)
+            const modalWrap = modal.createForm(document.querySelector('#app'))
+            UiEffects.slideOut(modalWrap);
         })
     }
 
-    static clickCloseModalBtn(btn) {
+    static clickCloseModalBtn(btn,modal) {
         btn.addEventListener('click', function () {
-            document.querySelector('.modal-form').style.transform = 'translate(-50%, -200%)';
-            setTimeout(() => {
-                this.parentElement.parentElement.parentElement.parentNode.remove();
-            },200)
+            Handlers.closeModal(modal);
         })
     }
 

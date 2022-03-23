@@ -27,33 +27,33 @@ export default class CreateClient {
         return label;
     }
 
-     createBtnSaveClient() {
+    createMainBtnClient(btnText = 'Сохранить', btnId = 'btn-save-client') {
         const wrap = document.createElement('div');
         const btnSave = document.createElement('button');
         wrap.classList.add('d-flex', 'justify-content-center');
         btnSave.type = 'submit';
         btnSave.classList.add('btn');
-        btnSave.textContent = 'Сохранить';
+        btnSave.textContent = btnText;
         btnSave.style.color = '#fff';
         btnSave.style.backgroundColor = '#9873FF';
         btnSave.style.padding = '12.5px 35px';
         btnSave.style.marginBottom = '5px';
         btnSave.style.transition = '300ms';
-        btnSave.id = 'btn-save';
-        Handlers.clickSaveClientData(btnSave);
+        btnSave.id = btnId;
         wrap.append(btnSave);
         return wrap;
     }
 
-    createBtnDeleteClient() {
+    createBtnClient(textBtn,idBtn) {
         const wrap = document.createElement('div');
-        const btnDelete = document.createElement('button');
+        const btnClient = document.createElement('button');
         wrap.classList.add('d-flex', 'justify-content-center');
-        btnDelete.classList.add('btn');
-        btnDelete.textContent = 'Удалить клиента';
-        btnDelete.style.color = '#333';
-        btnDelete.style.marginBottom = '5px';
-        wrap.append(btnDelete);
+        btnClient.classList.add('btn');
+        btnClient.id = idBtn
+        btnClient.textContent = textBtn;
+        btnClient.style.color = '#333';
+        btnClient.style.marginBottom = '5px';
+        wrap.append(btnClient);
         return wrap;
     }
 
@@ -96,7 +96,7 @@ export default class CreateClient {
         selectorDropdown.classList.add('flex-column', 'd-flex', 'position-absolute', 'dropdown-menu');
         wrapDropdownBtn.classList.add('d-flex', 'align-items-center', 'justify-content-between', 'position-relative');
         btnOpenDropdown.classList.add('btn', 'text-left');
-        iconСhevron.classList.add('position-absolute')
+        iconСhevron.classList.add('position-absolute');
         iconСhevron.style.right = '5%';
         iconСhevron.style.pointerEvents = 'none';
         wrapDropdownBtn.style.backgroundColor = '#e7e5eb';
@@ -191,13 +191,14 @@ export default class CreateClient {
         const lastNameInput = this.createInput('Отчество', 'input-middleName');
         const closeBtn = Handlers.closeModalBtn();
         const { containerContacts, btnAddContacts , listContacts} = this.createSectionContacts();
-        const btnSave = this.createBtnSaveClient();
-        const btnDelete = this.createBtnDeleteClient();
+        const btnSaveClient = this.createMainBtnClient();
+        const btnDelete = this.createBtnClient('Удалить клиента','btn-modal-delete');
+        const btnBack = this.createBtnClient('Отмена','btn-client-cancel');
 
         container.classList.add('position-absolute', 'modal-form');
-        container.style.top = '50%';
+        container.style.top = '-50%';
         container.style.left = '50%';
-        container.style.transform = 'translate(-50%, -200%)';
+        container.style.transform = 'translate(-50%, -50%)';
         container.classList.remove('container');
         container.style.zIndex = '999';
         container.querySelector('.col').style.flexGrow = '0';
@@ -215,14 +216,17 @@ export default class CreateClient {
         form.addEventListener('submit', e => e.preventDefault());
         titleWrap.append(title,id)
         container.querySelector('.col').append(form);
-        form.append(titleWrap, surnameInput, nameInput, lastNameInput, closeBtn, containerContacts, btnSave, btnDelete);
-        Handlers.clickCloseModalBtn(closeBtn);
+        form.append(titleWrap, surnameInput, nameInput, lastNameInput, closeBtn, containerContacts, btnSaveClient);
+        form.append(this.client ? btnDelete : btnBack);
+        Handlers.clickSaveClientData(btnSaveClient.querySelector('button'));
+        Handlers.clickCloseModalBtn(closeBtn, container);
         Handlers.clickAddContact(btnAddContacts.querySelector('button'), listContacts);
         UiEffects.slideOut(container);
         if (this.client) {
             this.fillClientData(nameInput, lastNameInput, surnameInput, id, containerContacts)
         }
         box.append(container);
+        return container;
     }
 
     fillClientData(nameInput, lastNameInput, surnameInput, id, containerContacts) {
@@ -230,7 +234,6 @@ export default class CreateClient {
         lastNameInput.querySelector('input').value = this.client.lastName;
         surnameInput.querySelector('input').value = this.client.surname;
         id.textContent = 'id:' + this.client.id;
-
         this.client.contacts.forEach((el) => {
             this.createContact(containerContacts, el.type, el.value);
         })

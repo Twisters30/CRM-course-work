@@ -5,6 +5,7 @@ import BootstrapContainer from '../BootstrapContainer.js';
 import Handlers from '../Handlers.js';
 import Fetch from '../Fetch.js';
 import Helper from '../Helper.js';
+import Modal from '../Modal.js';
 
 export default class TableController {
     constructor(titleTable, list, container) {
@@ -65,6 +66,11 @@ export default class TableController {
         } else {
             table.classList.remove('d-none');
         }
+    }
+
+    static createModalConfirm() {
+        const modal = new Modal();
+        return modal.createConfirmModal(document.querySelector('#app'));
     }
 
 }

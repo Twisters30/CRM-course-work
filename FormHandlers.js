@@ -31,8 +31,6 @@ export default class FormHandlers {
     static clearForm() {
         const formCreateClient = document.querySelector('#form-client');
         const inputsForm = formCreateClient.querySelectorAll('input');
-        const contactList = document.querySelector('#contact-list');
         inputsForm.forEach((el) => el.value = '');
-        contactList.innerHTML = '';
     }
 }

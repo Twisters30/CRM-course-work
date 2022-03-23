@@ -12,9 +12,11 @@ export default class UiEffects {
     }
 
     static slideOut(modal) {
-        modal.style.top = '50%';
-        modal.style.opacity = '1';
         modal.style.transition = '500ms';
+        setTimeout(() => {
+            modal.style.top = '50%';
+            modal.style.opacity = '1';
+        },100)
     }
 
     static onHoverScale(icon, bgColor) {
