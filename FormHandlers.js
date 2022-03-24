@@ -14,7 +14,6 @@ export default class FormHandlers {
                     continue;
                 } else {
                     const typeAttr = attr[k].name.split('-')[1];
-                    console.log(typeAttr, inputContacts[i].value)
                     contacts.push({ type: typeAttr, value: inputContacts[i].value })
                 }
             }

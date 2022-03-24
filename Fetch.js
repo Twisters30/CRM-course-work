@@ -25,9 +25,9 @@ export default class Fetch {
         };
         try {
             const response = await fetch(path.api + path.getClient + id, requestOptions);
-            const dataClient = await response.json();
+            const clientData = await response.json();
             const status = response.status;
-            return { status, dataClient }
+            return { status, clientData }
         } catch (error) {
             console.log(error, 'Не удалось получить данные клиента');
         }

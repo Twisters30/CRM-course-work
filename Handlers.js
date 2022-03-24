@@ -5,6 +5,7 @@ import FormHandlers from './FormHandlers.js';
 import Fetch from './Fetch.js';
 import TableController from './conrollers/TableController.js';
 import UiEffects from './Ui-effects.js';
+import Modal from './Modal.js';
 
 export default class Handlers {
     static async clickEditClient(bodyTable) {
@@ -12,14 +13,20 @@ export default class Handlers {
             const target = e.target;
             if (target.closest('.btn-edit')) {
                 const id = target.parentElement.parentElement.parentElement.querySelector('.id-client');
-                const { status , dataClient} = await Fetch.getClientData(id.id);
+                const { status , clientData} = await Fetch.getClientData(id.id);
+                const app = document.querySelector('#app')
                 if (status === 200 || status === 201) {
-                    const modalClient = new CreateClient(dataClient);
-                    const modalWrap = modalClient.createForm(document.querySelector('#app'));
-                    UiEffects.slideOut(modalWrap)
+                    const modalClient = new CreateClient(clientData);
+                    const modalWrap = modalClient.createForm(app);
+                    UiEffects.slideOut(modalWrap);
+                    Modal.createOverlayModal(app)
                 }
             }
         })
+    }
+    static closeOverlay() {
+        const modalOverlay = document.querySelector('#modal-overlay');
+        if (modalOverlay) modalOverlay.remove();
     }
 
     static closeModal(wrapModal) {
@@ -27,6 +34,7 @@ export default class Handlers {
         setTimeout(() => {
             wrapModal.remove();
         },200)
+        Handlers.closeOverlay();
     }
 
     static clickConfirmDelete(wrapModal, btnDeleteModal) {
@@ -45,6 +53,7 @@ export default class Handlers {
                 } else {
                     console.log(status, 'Ошибка при удалении');
                 }
+                Handlers.closeOverlay();
             }
         })
     }
@@ -56,6 +65,7 @@ export default class Handlers {
                 const { wrapModal, btnDeleteModal } = TableController.createModalConfirm();
                 UiEffects.slideOut(wrapModal);
                 Handlers.clickConfirmDelete(wrapModal, btnDeleteModal.querySelector('button'));
+                Modal.createOverlayModal(document.querySelector('#app'));
             }
         })
     }
@@ -89,11 +99,10 @@ export default class Handlers {
         })
     }
 
-    static clickDeleteContact(btn, containerContacts) {
+    static clickDeleteContact(btn) {
         btn.addEventListener('click', () => {
-            const btnAddContacts = containerContacts.nextSibling;
             btn.parentElement.remove();
-            Helper.checkLimitContacts(btnAddContacts, containerContacts);
+            Helper.checkLimitContacts();
         })
     }
 
@@ -113,14 +122,17 @@ export default class Handlers {
     static clickCreateClient(btn) {
         const modal = new CreateClient();
         btn.addEventListener('click', () => {
-            const modalWrap = modal.createForm(document.querySelector('#app'))
+            const containerApp = document.querySelector('#app');
+            const modalWrap = modal.createForm(containerApp);
+            Modal.createOverlayModal(document.querySelector('#app'));
             UiEffects.slideOut(modalWrap);
         })
     }
 
-    static clickCloseModalBtn(btn,modal) {
+    static clickCloseModal(btn,modal) {
         btn.addEventListener('click', function () {
             Handlers.closeModal(modal);
+            Handlers.closeOverlay();
         })
     }
 
@@ -161,7 +173,7 @@ export default class Handlers {
         const createClient = new CreateClient();
         btn.addEventListener('click', () => {
             createClient.createContact(container);
-            Helper.checkLimitContacts(btn, container);
+            Helper.checkLimitContacts();
         })
     }
 
@@ -171,7 +183,6 @@ export default class Handlers {
             if (target.tagName === 'UL') return;
             if (target.closest('li')) {
                 let btnDropdown = target.parentElement.previousSibling;
-                console.log(btnDropdown)
                 let input = btnDropdown.parentElement.nextSibling;
                 btnDropdown.textContent = target.textContent;
                 const dataText = Helper.parseAttributeInput(btnDropdown);

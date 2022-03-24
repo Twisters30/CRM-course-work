@@ -21,7 +21,7 @@ export default class TableBody {
         tooltip.classList.add('text-tooltip');
         icon.classList.add('icon-tooltip')
         tooltip.textContent = value;
-        if (type === 'phone') {
+        if (type === 'phone' || type === 'addphone') {
             link.href = `tel:${value}`;
         } else if (type === 'email') {
             link.href = `mailto:${value}`;
@@ -29,13 +29,13 @@ export default class TableBody {
             link.href = value;
         }
         link.target = '_blank';
-        icon.style.backgroundImage = iconPath;
         icon.style.width = '16px';
         icon.style.height = '16px';
         icon.style.display = 'block';
         icon.style.backgroundImage = `url(${iconPath})`;
         icon.style.backgroundSize = '16px';
         link.append(icon,tooltip);
+        console.log(link)
         return link;
     }
 
@@ -78,21 +78,26 @@ export default class TableBody {
 
     createContactsCell(value, ul) {
         value.forEach((el) => {
+            console.log(el.type, el.value)
             if (el.type === 'vk') {
                 const iconPath = `${ path.folder + path.icons.vk }`;
                 this.createListItem(ul, this.createIconContact(iconPath, el.value))
             } else if (el.type === 'facebook') {
+                console.log(el.type)
                 const iconPath = `${ path.folder + path.icons.fb }`;
                 this.createListItem(ul, this.createIconContact(iconPath, el.value))
             } else if (el.type === 'phone') {
                 const iconPath = `${ path.folder + path.icons.phone }`;
-                this.createListItem(ul, this.createIconContact(iconPath, el.value, 'phone'))
+                this.createListItem(ul, this.createIconContact(iconPath, el.value, 'phone'));
             } else if (el.type === 'email') {
                 const iconPath = `${ path.folder + path.icons.email }`;
-                this.createListItem(ul, this.createIconContact(iconPath, el.value, 'email'))
+                this.createListItem(ul, this.createIconContact(iconPath, el.value, 'email'));
             } else if (el.type === 'subtract') {
                 const iconPath = `${ path.folder + path.icons.subtract }`;
-                this.createListItem(ul, this.createIconContact(iconPath, el.value))
+                this.createListItem(ul, this.createIconContact(iconPath, el.value));
+            } else if (el.type === 'addphone') {
+                const iconPath = `${ path.folder + path.icons.addPhone }`;
+                this.createListItem(ul, this.createIconContact(iconPath, el.value, 'addphone'));
             }
         })
         UiEffects.hoverTooltip(ul);

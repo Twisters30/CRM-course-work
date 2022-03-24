@@ -34,7 +34,7 @@ export default class Helper {
                 return 'phone';
             }
             case 'Доп. телефон': {
-                return 'addPhone';
+                return 'addphone';
             }
             case 'Email': {
                 return 'email';
@@ -54,7 +54,7 @@ export default class Helper {
             case 'phone': {
                 return 'Телефон';
             }
-            case 'addPhone': {
+            case 'addphone': {
                 return 'Доп. телефон';
             }
             case 'email': {
@@ -70,7 +70,9 @@ export default class Helper {
         }
     }
 
-    static checkLimitContacts(btnAddContact, contactsWrapper) {
+    static checkLimitContacts() {
+        const btnAddContact = document.querySelector('#btn-wrap-contacts');
+        const contactsWrapper = document.querySelector('#contacts-list');
         let i = contactsWrapper.children.length;
         if (i >= 10) {
             btnAddContact.style.opacity = '0';
@@ -84,7 +86,14 @@ export default class Helper {
             btnAddContact.classList.remove('d-none');
             setTimeout(() => {
                 btnAddContact.style.opacity = '1';
-            },300)
+            },100)
+        }
+        if (i >= 5) {
+            contactsWrapper.style.overflowY = 'scroll';
+            contactsWrapper.style.height = '300px';
+        } else {
+            contactsWrapper.style.overflowY = 'none';
+            contactsWrapper.style.height = '100%';
         }
     }
 
@@ -102,4 +111,5 @@ export default class Helper {
             app.querySelector('#title-plug').remove();
         }
     }
+
 }

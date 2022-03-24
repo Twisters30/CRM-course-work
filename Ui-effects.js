@@ -12,9 +12,11 @@ export default class UiEffects {
     }
 
     static slideOut(modal) {
+        const modalHeight = modal.getBoundingClientRect().height;
+        if (!modal) return;
         modal.style.transition = '500ms';
         setTimeout(() => {
-            modal.style.top = '50%';
+            modal.style.top = modalHeight + 'px';
             modal.style.opacity = '1';
         },100)
     }

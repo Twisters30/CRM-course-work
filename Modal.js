@@ -12,8 +12,8 @@ export default class Modal {
         const btnConfirmCancel = createClient.createBtnClient('Отмена', 'btn-confirm-cancel');
         const btnCloseModal = Handlers.closeModalBtn();
 
-        wrapModal.classList.add('d-flex', 'flex-column', 'bg-white', 'position-absolute', 'text-center');
-        wrapModal.style.top = '-100%';
+        wrapModal.classList.add('d-flex', 'flex-column', 'bg-white', 'position-fixed', 'text-center');
+        wrapModal.style.top = '-50%';
         wrapModal.style.left = '50%';
         wrapModal.style.transform = 'translate(-50%, -50%)';
         wrapModal.style.padding = '22px 20px 27px 22px';
@@ -22,15 +22,30 @@ export default class Modal {
         wrapModal.id = 'modal-confirm';
         titleModal.style.marginBottom = '11px';
         messageModal.style.marginBottom = '25px';
+        wrapModal.style.zIndex = '998'
         titleModal.textContent = 'Удалить клиента';
         messageModal.textContent = 'Вы действительно хотите удалить данного клиента?';
-        Handlers.clickCloseModalBtn(btnCloseModal, wrapModal);
+        Handlers.clickCloseModal(btnCloseModal, wrapModal);
         wrapModal.append(titleModal, messageModal, btnDeleteModal, btnConfirmCancel, btnCloseModal);
         container.append(wrapModal);
+        Handlers.clickCloseModal(btnConfirmCancel, wrapModal);
         return {
             wrapModal,
             btnDeleteModal,
             btnConfirmCancel
         };
+    }
+
+    static createOverlayModal(container) {
+        const overlay = document.createElement('div');
+        overlay.classList.add('position-fixed');
+        overlay.style.height = '100%';
+        overlay.style.width = '100%';
+        overlay.style.zIndex = '900';
+        overlay.style.top = '0';
+        overlay.style.opacity = '.8';
+        overlay.style.backgroundColor = '#333';
+        overlay.id = 'modal-overlay';
+        container.append(overlay);
     }
 }

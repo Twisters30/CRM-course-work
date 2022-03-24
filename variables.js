@@ -42,6 +42,7 @@ const icons = {
     vk: 'vk.svg',
     fb: 'fb.svg',
     phone: 'phone.svg',
+    addPhone: 'phone.svg',
     subtract: 'subtract.svg',
     email: 'mail.svg',
     edit: 'edit.svg',

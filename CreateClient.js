@@ -63,6 +63,7 @@ export default class CreateClient {
         const icon = document.createElement('span');
         wrapBtnIcon.classList.add('d-flex', 'align-items-center', 'justify-content-center', 'position-relative');
         wrapBtnIcon.style.transition = '300ms';
+        wrapBtnIcon.id = 'btn-wrap-contacts';
         icon.classList.add('d-block', 'position-absolute');
         icon.style.width = '15px';
         icon.style.height = '15px';
@@ -139,7 +140,7 @@ export default class CreateClient {
         return wrapCloseBtn;
     }
 
-    createContact(sectionContacts, type = 'phone', value = null) {
+    createContact(sectionContacts, type = 'phone', value = '') {
         const wrapContact = document.createElement('li');
         const deleteContactBtn = this.crateBtnDeleteContact();
         const input = document.createElement('input');
@@ -158,17 +159,18 @@ export default class CreateClient {
         dropdown.querySelector('button').textContent = Helper.parseForBtnText(type);
         Handlers.clickDeleteContact(deleteContactBtn, sectionContacts);
         wrapContact.append(dropdown, input, deleteContactBtn);
-        sectionContacts.prepend(wrapContact);
+        sectionContacts.append(wrapContact);
     }
 
     createSectionContacts() {
-        const containerContacts = document.createElement('div')
+        const containerContacts = document.createElement('div');
         const listContacts = document.createElement('ul');
         const btnAddContacts = this.createBtnAddContacts();
-        listContacts.classList.add('d-flex', 'flex-column', 'm-0');
-        containerContacts.classList.add('d-flex', 'justify-content-center', 'flex-column')
+        listContacts.classList.add('d-flex', 'flex-column', 'm-0', 'contacts-list');
+        listContacts.id = 'contacts-list';
+        containerContacts.classList.add('d-flex', 'justify-content-center', 'flex-column');
         containerContacts.style.backgroundColor = 'rgb(244,243,246)';
-        containerContacts.style.padding = '25px 0'
+        containerContacts.style.padding = '25px 0';
         containerContacts.style.margin = '25px 0';
         containerContacts.style.transition = '300ms';
         containerContacts.append(listContacts,btnAddContacts)
@@ -195,7 +197,7 @@ export default class CreateClient {
         const btnDelete = this.createBtnClient('Удалить клиента','btn-modal-delete');
         const btnBack = this.createBtnClient('Отмена','btn-client-cancel');
 
-        container.classList.add('position-absolute', 'modal-form');
+        container.classList.add('position-fixed', 'modal-form');
         container.style.top = '-50%';
         container.style.left = '50%';
         container.style.transform = 'translate(-50%, -50%)';
@@ -214,16 +216,15 @@ export default class CreateClient {
         id.textContent = '';
         id.style.color = '#B0B0B0';
         form.addEventListener('submit', e => e.preventDefault());
-        titleWrap.append(title,id)
+        titleWrap.append(title,id);
         container.querySelector('.col').append(form);
         form.append(titleWrap, surnameInput, nameInput, lastNameInput, closeBtn, containerContacts, btnSaveClient);
         form.append(this.client ? btnDelete : btnBack);
         Handlers.clickSaveClientData(btnSaveClient.querySelector('button'));
-        Handlers.clickCloseModalBtn(closeBtn, container);
+        Handlers.clickCloseModal(closeBtn, container);
         Handlers.clickAddContact(btnAddContacts.querySelector('button'), listContacts);
-        UiEffects.slideOut(container);
         if (this.client) {
-            this.fillClientData(nameInput, lastNameInput, surnameInput, id, containerContacts)
+            this.fillClientData(nameInput, lastNameInput, surnameInput, id, containerContacts);
         }
         box.append(container);
         return container;
@@ -235,7 +236,7 @@ export default class CreateClient {
         surnameInput.querySelector('input').value = this.client.surname;
         id.textContent = 'id:' + this.client.id;
         this.client.contacts.forEach((el) => {
-            this.createContact(containerContacts, el.type, el.value);
+            this.createContact(containerContacts.querySelector('.contacts-list'), el.type, el.value);
         })
     }
 }
