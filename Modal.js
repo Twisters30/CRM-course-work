@@ -1,5 +1,6 @@
 import CreateClient from './CreateClient.js';
 import Handlers from './Handlers.js';
+import path from './variables.js';
 
 export default class Modal {
     createConfirmModal(container) {
@@ -10,7 +11,7 @@ export default class Modal {
         const messageModal = document.createElement('p');
         const btnDeleteModal = createClient.createMainBtnClient('Удалить', 'btn-confirm-delete');
         const btnConfirmCancel = createClient.createBtnClient('Отмена', 'btn-confirm-cancel');
-        const btnCloseModal = Handlers.closeModalBtn();
+        const btnCloseModal = Modal.closeModalBtn();
 
         wrapModal.classList.add('d-flex', 'flex-column', 'bg-white', 'position-fixed', 'text-center');
         wrapModal.style.top = '-50%';
@@ -22,7 +23,7 @@ export default class Modal {
         wrapModal.id = 'modal-confirm';
         titleModal.style.marginBottom = '11px';
         messageModal.style.marginBottom = '25px';
-        wrapModal.style.zIndex = '998'
+        wrapModal.style.zIndex = '999';
         titleModal.textContent = 'Удалить клиента';
         messageModal.textContent = 'Вы действительно хотите удалить данного клиента?';
         Handlers.clickCloseModal(btnCloseModal, wrapModal);
@@ -47,5 +48,19 @@ export default class Modal {
         overlay.style.backgroundColor = '#333';
         overlay.id = 'modal-overlay';
         container.append(overlay);
+    }
+
+    static closeModalBtn() {
+        const closeBtn = document.createElement('button');
+        closeBtn.classList.add('btn', 'position-absolute');
+        closeBtn.style.top = '5%';
+        closeBtn.style.right = '5%';
+        closeBtn.style.width = '15px';
+        closeBtn.style.height = '15px';
+        closeBtn.style.backgroundRepeat = 'no-repeat';
+        closeBtn.style.backgroundPositionY = 'center';
+        closeBtn.style.backgroundImage = `url(${path.folderBtns + path.icons.close})`;
+
+        return closeBtn;
     }
 }

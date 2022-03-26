@@ -1,3 +1,5 @@
+import Handlers from './Handlers.js';
+
 export default class TableHeader {
     constructor(title,listTitleTable) {
         this.title = title;
@@ -55,12 +57,25 @@ export default class TableHeader {
         wrap.classList.add('d-flex', 'align-items-center', 'justify-content-center', 'flex-nowrap');
         wrap.textContent = text;
         th.style.color = '#B0B0B0';
+        th.style.cursor = 'pointer';
         th.append(wrap);
         if (this.checkIconArrow(text)) {
             this.addArrowIcon(wrap, 'url(./assets/img/arrow.svg)');
+            wrap.firstElementChild.id = 'arrow-sort';
+            wrap.firstElementChild.style.transition = '300ms';
         }
         if (text === 'Фамилия Имя Отчество') {
             this.addAlphabetIcon(wrap,'url(./assets/img/alphabet.svg)');
+            th.id = 'client-fio-td';
+        }
+        if (text === 'ID') {
+            th.id = 'client-id-td';
+        }
+        if (text === 'Дата и время создания') {
+            th.id = 'client-createdAt-td';
+        }
+        if (text === 'Последние изменения') {
+            th.id = 'client-updatedAt-td';
         }
         return th;
     }
@@ -71,10 +86,12 @@ export default class TableHeader {
 
     createTableHeader() {
         const thead = document.createElement('thead');
+        thead.id = 'client-thead';
         const tr = this.createTrTable();
 
         this.listTitleTable.forEach((el) => tr.append(this.createCellTable(el)))
         thead.append(tr);
+        Handlers.clickTableSort(thead);
         return thead;
     }
 }

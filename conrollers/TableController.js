@@ -6,6 +6,7 @@ import Handlers from '../Handlers.js';
 import Fetch from '../Fetch.js';
 import Helper from '../Helper.js';
 import Modal from '../Modal.js';
+import TableSort from '../TableSort.js';
 
 export default class TableController {
     constructor(titleTable, list, container) {
@@ -48,6 +49,8 @@ export default class TableController {
         this.container.append(section);
         TableController.hideTable();
         Helper.titlePlugPage();
+        TableSort.markByDefaultSort(document.querySelector('#client-id-td'));
+        Helper.arrowSortControl();
     }
 
     static refreshTable(clients) {

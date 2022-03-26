@@ -1,3 +1,4 @@
+
 export default class Helper {
 
     static parseDate(ell) {
@@ -5,7 +6,7 @@ export default class Helper {
         const day = `${(date.getDate() + 1) < 10 ? '0' +(date.getDate() + 1) : (date.getDate() + 1)}`;
         const month = `${(date.getMonth() + 1) < 10 ? '0' +(date.getMonth() + 1) : (date.getMonth() + 1)}`;
         const year = date.getFullYear();
-        const hours = `${(date.getHours() + 1) < 10 ? '0' +(date.getHours() + 1) : (date.getHours() + 1)}`;
+        const hours = `${date.getHours() < 10 ? '0' + date.getHours() : date.getHours()}`;
         const minutes =`${(date.getMinutes() + 1) < 10 ? '0' +(date.getMinutes() + 1) : (date.getMinutes() + 1)}`;
         const time = hours + '.' + minutes;
         const parseDate = day + '.' + month + '.' + year + '-' + time;
@@ -88,13 +89,6 @@ export default class Helper {
                 btnAddContact.style.opacity = '1';
             },100)
         }
-        if (i >= 5) {
-            contactsWrapper.style.overflowY = 'scroll';
-            contactsWrapper.style.height = '300px';
-        } else {
-            contactsWrapper.style.overflowY = 'none';
-            contactsWrapper.style.height = '100%';
-        }
     }
 
     static titlePlugPage() {
@@ -110,6 +104,18 @@ export default class Helper {
         } else if (app.querySelector('#title-plug')) {
             app.querySelector('#title-plug').remove();
         }
+    }
+
+    static arrowSortControl() {
+        const thArr = document.querySelectorAll('th');
+        thArr.forEach((th) => {
+            if (th.querySelector('#arrow-sort')) {
+                th.querySelector('#arrow-sort').style.transform = 'rotate(0deg)';
+            }
+            if (th.firstElementChild.classList.contains('sorted')) {
+                th.querySelector('#arrow-sort').style.transform = 'rotate(180deg)';
+            }
+        })
     }
 
 }

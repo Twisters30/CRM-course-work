@@ -35,7 +35,6 @@ export default class TableBody {
         icon.style.backgroundImage = `url(${iconPath})`;
         icon.style.backgroundSize = '16px';
         link.append(icon,tooltip);
-        console.log(link)
         return link;
     }
 
@@ -78,7 +77,6 @@ export default class TableBody {
 
     createContactsCell(value, ul) {
         value.forEach((el) => {
-            console.log(el.type, el.value)
             if (el.type === 'vk') {
                 const iconPath = `${ path.folder + path.icons.vk }`;
                 this.createListItem(ul, this.createIconContact(iconPath, el.value))
@@ -151,7 +149,7 @@ export default class TableBody {
             this.fillDataClient(el,tr);
             tBody.append(tr)
         })
-        Handlers.clickDeleteClientInTable(tBody);
+        Handlers.clickDeleteClient(tBody,'.btn-delete');
         Handlers.clickEditClient(tBody);
         return tBody;
     }

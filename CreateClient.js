@@ -4,6 +4,7 @@ import UiEffects from './Ui-effects.js';
 import path from './variables.js';
 import TableBody from './TableBody.js';
 import Helper from './Helper.js';
+import Modal from './Modal.js';
 
 export default class CreateClient {
     constructor(client) {
@@ -94,7 +95,7 @@ export default class CreateClient {
         const btnOpenDropdown = document.createElement('button');
         const selectorDropdown = document.createElement('ul');
         const iconСhevron = TableBody.createIcon('10', '6', path.icons.chevron);
-        selectorDropdown.classList.add('flex-column', 'd-flex', 'position-absolute', 'dropdown-menu');
+        selectorDropdown.classList.add('flex-column','position-absolute', 'dropdown-menu');
         wrapDropdownBtn.classList.add('d-flex', 'align-items-center', 'justify-content-between', 'position-relative');
         btnOpenDropdown.classList.add('btn', 'text-left');
         iconСhevron.classList.add('position-absolute');
@@ -110,11 +111,10 @@ export default class CreateClient {
         selectorDropdown.style.backgroundColor = '#F4F3F6';
         selectorDropdown.style.width = '102%';
         selectorDropdown.style.border = '1px solid #C8C5D1';
-        selectorDropdown.style.opacity = '0';
         selectorDropdown.style.transition = '300ms';
         selectorDropdown.style.minWidth = '100%';
         selectorDropdown.style.padding = '0';
-        selectorDropdown.style.pointerEvents = 'none';
+        selectorDropdown.style.display = 'none';
         iconСhevron.style.transition = '300ms';
         wrapDropdownBtn.append(btnOpenDropdown, selectorDropdown, iconСhevron);
         this.crateSelectorDropdown(selectorDropdown, path.dropdownContacts);
@@ -168,7 +168,8 @@ export default class CreateClient {
         const btnAddContacts = this.createBtnAddContacts();
         listContacts.classList.add('d-flex', 'flex-column', 'm-0', 'contacts-list');
         listContacts.id = 'contacts-list';
-        containerContacts.classList.add('d-flex', 'justify-content-center', 'flex-column');
+        containerContacts.classList.add('d-flex', 'justify-content-center', 'flex-column', 'position-relative');
+        containerContacts.id = 'wrap-contact-list';
         containerContacts.style.backgroundColor = 'rgb(244,243,246)';
         containerContacts.style.padding = '25px 0';
         containerContacts.style.margin = '25px 0';
@@ -191,7 +192,7 @@ export default class CreateClient {
         const surnameInput = this.createInput('Фамилия*', 'input-family');
         const nameInput = this.createInput('Имя*', 'input-name');
         const lastNameInput = this.createInput('Отчество', 'input-middleName');
-        const closeBtn = Handlers.closeModalBtn();
+        const closeBtn = Modal.closeModalBtn();
         const { containerContacts, btnAddContacts , listContacts} = this.createSectionContacts();
         const btnSaveClient = this.createMainBtnClient();
         const btnDelete = this.createBtnClient('Удалить клиента','btn-modal-delete');
@@ -208,8 +209,10 @@ export default class CreateClient {
         form.id = 'form-client';
         form.classList.add('bg-white');
         form.style.padding = '24px 30px 25px 30px';
-        id.classList.add('d-block');
-        id.id = 'id-client';
+        id.classList.add('d-block', 'id-client');
+        if (this.client) {
+            id.id = this.client.id;
+        }
         titleWrap.classList.add('d-flex', 'align-items-center');
         title.classList.add('mr-2');
         title.textContent = 'Изменить данные';
@@ -220,9 +223,11 @@ export default class CreateClient {
         container.querySelector('.col').append(form);
         form.append(titleWrap, surnameInput, nameInput, lastNameInput, closeBtn, containerContacts, btnSaveClient);
         form.append(this.client ? btnDelete : btnBack);
-        Handlers.clickSaveClientData(btnSaveClient.querySelector('button'));
+        Handlers.clickSaveClientData(btnSaveClient.querySelector('button'),id);
+        Handlers.clickDeleteClient(btnDelete,'#btn-modal-delete');
         Handlers.clickCloseModal(closeBtn, container);
         Handlers.clickAddContact(btnAddContacts.querySelector('button'), listContacts);
+
         if (this.client) {
             this.fillClientData(nameInput, lastNameInput, surnameInput, id, containerContacts);
         }
