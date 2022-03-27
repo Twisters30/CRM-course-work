@@ -2,7 +2,7 @@ import Validation from './Validation.js';
 
 export default class FormHandlers {
     static submitFormClient() {
-        Validation.clientForm();
+        // Validation.clientForm();
         const inputName = document.querySelector('#input-name');
         const inputMiddleName = document.querySelector('#input-middleName');
         const inputFamily = document.querySelector('#input-family');
