@@ -51,6 +51,7 @@ export default class TableController {
         Helper.titlePlugPage();
         TableSort.markByDefaultSort(document.querySelector('#client-id-td'));
         Helper.arrowSortControl();
+        await Fetch.searchClients();
     }
 
     static refreshTable(clients) {

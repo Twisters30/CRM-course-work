@@ -75,6 +75,20 @@ export default class Fetch {
         } catch (error) {
             console.log(error, 'Не удалось добавить клиента');
         }
+    }
 
+    static async searchClients() {
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        };
+        try {
+            const response = await fetch(path.api + path.getListClient + path.search + 'Maximov', requestOptions);
+            const data = await response.json();
+            console.log(data)
+            // return Helper.parseResponseClientList(data);
+        } catch (error) {
+            console.log(error, 'Не удалось добавить клиента');
+        }
     }
 }

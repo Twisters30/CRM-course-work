@@ -65,7 +65,8 @@ const getListClient = 'api/clients';
 const postClient = 'api/clients';
 const deleteClient = 'api/clients/';
 const getClient = 'api/clients/';
-const patchClient = 'api/clients/'
+const patchClient = 'api/clients/';
+const search = `/search=`
 
 export default {
     listTitleTable,
@@ -79,5 +80,6 @@ export default {
     postClient,
     deleteClient,
     getClient,
-    patchClient
+    patchClient,
+    search
 };
