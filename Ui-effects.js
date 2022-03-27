@@ -45,4 +45,12 @@ export default class UiEffects {
             btn.classList.remove('bg-danger');
         },500);
     }
+
+    static highlightInput(input) {
+        input.style.transition = '300ms';
+        input.classList.add('bg-danger');
+        setTimeout(() => {
+            input.classList.remove('bg-danger');
+        },500)
+    }
 }
