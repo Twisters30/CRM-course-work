@@ -1,5 +1,6 @@
 import path from './variables.js';
 import Helper from './Helper.js';
+import UiEffects from './Ui-effects.js';
 
 export default class Fetch {
 
@@ -24,11 +25,16 @@ export default class Fetch {
             headers: { 'Content-Type': 'application/json' },
         };
         try {
+            UiEffects.loader();
             const response = await fetch(path.api + path.getClient + id, requestOptions);
             const clientData = await response.json();
             const status = response.status;
+            if (response.status === (200 || 201)) {
+                UiEffects.removeLoader();
+            }
             return { status, clientData }
         } catch (error) {
+            UiEffects.removeLoader();
             console.log(error, 'Не удалось получить данные клиента');
         }
     }
@@ -69,10 +75,15 @@ export default class Fetch {
             headers: { 'Content-Type': 'application/json' },
         };
         try {
+            UiEffects.loader();
             const response = await fetch(path.api + path.getListClient, requestOptions);
+            if (response.status === (200 || 201)) {
+                UiEffects.removeLoader();
+            }
             const data = await response.json();
             return Helper.parseResponseClientList(data);
         } catch (error) {
+            UiEffects.removeLoader();
             console.log(error, 'Не удалось добавить клиента');
         }
     }

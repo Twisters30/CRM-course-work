@@ -7,6 +7,7 @@ import Fetch from '../Fetch.js';
 import Helper from '../Helper.js';
 import Modal from '../Modal.js';
 import TableSort from '../TableSort.js';
+import UiEffects from '../Ui-effects.js';
 
 export default class TableController {
     constructor(titleTable, list, container) {
@@ -32,6 +33,7 @@ export default class TableController {
     async createTable() {
         const clients = await Fetch.getClients();
         const container = BootstrapContainer.createContainer();
+        const tagMain = document.createElement('main');
         const section = document.createElement('section');
         const icon = this.createBtnAddClient('Добавить клиента');
         const table = document.createElement('table');
@@ -45,8 +47,9 @@ export default class TableController {
 
         table.append(tableHeader.createTitleTable(), tableHeader.createTableHeader(), tableBody.createTableBody());
         container.querySelector('.col').append(table,icon);
+        tagMain.append(section);
         section.append(container);
-        this.container.append(section);
+        this.container.append(tagMain);
         TableController.hideTable();
         Helper.titlePlugPage();
         TableSort.markByDefaultSort(document.querySelector('#client-id-td'));

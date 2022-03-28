@@ -24,6 +24,7 @@ export default class Handlers {
             }
         })
     }
+
     static closeOverlay() {
         const modalOverlay = document.querySelector('#modal-overlay');
         if (modalOverlay) modalOverlay.remove();
@@ -176,7 +177,7 @@ export default class Handlers {
                 let btnDropdown = target.parentElement.previousSibling;
                 let input = btnDropdown.parentElement.nextSibling;
                 btnDropdown.textContent = target.textContent;
-                const dataText = Helper.parseAttributeInput(btnDropdown);
+                const dataText = Helper.parseAttributeInput(btnDropdown.textContent);
                 if (input.hasAttributes()) {
                     const attributes = input.attributes;
                     for (let i = 0; i < attributes.length;i++) {

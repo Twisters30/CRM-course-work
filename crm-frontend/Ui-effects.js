@@ -53,4 +53,27 @@ export default class UiEffects {
             input.classList.remove('bg-danger');
         },500)
     }
+
+    static loader(container = document.querySelector('#app')) {
+        const loaderWrap = document.createElement('div');
+        const div1 = document.createElement('div');
+        const div2 = document.createElement('div');
+        const div3 = document.createElement('div');
+        const div4 = document.createElement('div');
+
+        loaderWrap.classList.add('lds-ring');
+        loaderWrap.append(div1, div2, div3, div4);
+        container.append(loaderWrap);
+    }
+
+    static removeLoader() {
+        document.querySelector('.lds-ring').remove();
+    }
+
+    static inputActive(element) {
+        const titles = element.querySelectorAll('span');
+        titles.forEach((el) => {
+            el.style.transform = 'translateY(0px)';
+        })
+    }
 }

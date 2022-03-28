@@ -5,6 +5,7 @@ import path from './variables.js';
 import TableBody from './TableBody.js';
 import Helper from './Helper.js';
 import Modal from './Modal.js';
+import FormHandlers from './FormHandlers.js';
 
 export default class CreateClient {
     constructor(client) {
@@ -18,11 +19,14 @@ export default class CreateClient {
 
         input.id = idInput;
         input.style.width = '390px';
+        input.style.height = '100%';
         input.style.border = 'none';
         input.style.borderBottom = '1px solid #C8C5D1';
         label.classList.add('d-flex', 'flex-column');
         label.style.marginBottom = '15px';
         title.style.paddingBottom = '2px';
+        title.style.transition = '300ms';
+        title.style.transform = 'translateY(20px)';
         title.textContent = value;
         label.append(title,input);
         return label;
@@ -227,9 +231,11 @@ export default class CreateClient {
         Handlers.clickDeleteClient(btnDelete,'#btn-modal-delete');
         Handlers.clickCloseModal(closeBtn, container);
         Handlers.clickAddContact(btnAddContacts.querySelector('button'), listContacts);
+        FormHandlers.eventsInputActive(form);
 
         if (this.client) {
             this.fillClientData(nameInput, lastNameInput, surnameInput, id, containerContacts);
+            UiEffects.inputActive(form);
         }
         box.append(container);
         return container;

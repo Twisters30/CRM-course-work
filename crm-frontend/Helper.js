@@ -29,46 +29,26 @@ export default class Helper {
         return clients;
     }
 
-    static parseAttributeInput(btn) {
-        switch (btn.textContent) {
-            case 'Телефон': {
-                return 'phone';
-            }
-            case 'Доп. телефон': {
-                return 'addphone';
-            }
-            case 'Email': {
-                return 'email';
-            }
-            case 'Vk': {
-                return 'vk';
-            }
-            case 'Facebook': {
-                return 'facebook';
-            }
-            default : return 'subtract';
-        }
+    static parseAttributeInput(value) {
+        const btn = {
+            'Телефон': 'phone',
+            'Доп. телефон': 'addphone',
+            'Email': 'email',
+            'Vk' : 'vk',
+            'Facebook': 'facebook'
+        };
+        return value ? btn[value] : 'subtract';
     }
 
-    static parseForBtnText(type) {
-        switch (type) {
-            case 'phone': {
-                return 'Телефон';
-            }
-            case 'addphone': {
-                return 'Доп. телефон';
-            }
-            case 'email': {
-                return 'Email';
-            }
-            case 'vk': {
-                return ' Vk';
-            }
-            case 'facebook': {
-                return ' Facebook';
-            }
-            default : return 'subtract';
+    static parseForBtnText(value) {
+        const type = {
+            'phone': 'Телефон',
+            'addphone': 'Доп. телефон',
+            'email': 'Email',
+            'vk': 'Vk',
+            'facebook': 'Facebook'
         }
+        return value ? type[value] : 'subtract';
     }
 
     static checkLimitContacts() {
@@ -117,5 +97,4 @@ export default class Helper {
             }
         })
     }
-
 }

@@ -29,9 +29,33 @@ export default class FormHandlers {
         }
         return formData;
     }
+
     static clearForm() {
         const formCreateClient = document.querySelector('#form-client');
         const inputsForm = formCreateClient.querySelectorAll('input');
         inputsForm.forEach((el) => el.value = '');
+    }
+
+    static eventsInputActive(form) {
+        const inputs = form.querySelectorAll('input');
+
+        inputs.forEach((el) => {
+            el.addEventListener('blur', (e) => {
+                const title = e.target.previousSibling;
+                if (e.target.value) {
+                    title.style.transform = 'translateY(0px)';
+                } else {
+                    title.style.transform = 'translateY(20px)';
+                }
+            })
+            el.addEventListener('focus', (e) => {
+                const title = e.target.previousSibling;
+                if (e.target.value && title.style.transform === 'translateY(0px)') {
+                    return;
+                }
+                title.style.transform = 'translateY(0px)';
+            })
+        })
+
     }
 }

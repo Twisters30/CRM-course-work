@@ -22,8 +22,10 @@ export default class Modal {
         wrapModal.style.opacity = '0';
         wrapModal.id = 'modal-confirm';
         titleModal.style.marginBottom = '11px';
-        messageModal.style.marginBottom = '25px';
+        messageModal.style.margin = '0 auto 25px';
+        messageModal.style.maxWidth = '270px';
         wrapModal.style.zIndex = '999';
+        wrapModal.style.width = '450px';
         titleModal.textContent = 'Удалить клиента';
         messageModal.textContent = 'Вы действительно хотите удалить данного клиента?';
         Handlers.clickCloseModal(btnCloseModal, wrapModal);
