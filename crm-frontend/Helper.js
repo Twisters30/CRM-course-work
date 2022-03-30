@@ -75,11 +75,12 @@ export default class Helper {
         const title = document.createElement('h2');
         const table = document.querySelector('#table-client');
         const tableBody = document.querySelector('#table-body');
-        const app =document.querySelector('#app');
+        const app = document.querySelector('#app');
         title.id = 'title-plug';
         title.classList.add('text-center', 'mb-5');
         title.textContent = 'Сдесь пока ничего нет';
         if (tableBody.children.length === 0) {
+            if (document.querySelector('#title-plug')) return;
             table.insertAdjacentElement('beforebegin', title)
         } else if (app.querySelector('#title-plug')) {
             app.querySelector('#title-plug').remove();
@@ -96,5 +97,15 @@ export default class Helper {
                 th.querySelector('#arrow-sort').style.transform = 'rotate(180deg)';
             }
         })
+    }
+
+    static switchSortClass(target, thNodes) {
+        for (let i = 0; i < thNodes.length;i++) {
+            if (thNodes[i].firstChild === target) {
+                target.classList.toggle('sorted');
+            } else {
+                thNodes[i].firstChild.classList.remove('sorted');
+            }
+        }
     }
 }

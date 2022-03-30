@@ -1,3 +1,5 @@
+import FormHandlers from './FormHandlers.js';
+
 export default class HeaderPage {
     createHeader() {
         const header = document.createElement('header');
@@ -43,6 +45,8 @@ export default class HeaderPage {
 
         header.append(container);
         container.append(row);
+
+        FormHandlers.searchClient(searchInput);
 
         return header;
     }

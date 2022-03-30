@@ -1,4 +1,5 @@
 import Handlers from './Handlers.js';
+import Helper from './Helper.js';
 
 export default class TableHeader {
     constructor(title,listTitleTable) {
@@ -53,19 +54,26 @@ export default class TableHeader {
 
     createCellTable(text) {
         const th = document.createElement('th');
+        const btnHeader = document.createElement('button');
         const wrap = document.createElement('div');
-        wrap.classList.add('d-flex', 'align-items-center', 'justify-content-center', 'flex-nowrap');
+        btnHeader.classList.add('d-flex', 'align-items-center', 'justify-content-center', 'flex-nowrap', 'table-header-btn');
+        wrap.classList.add('d-flex', 'align-items-center', 'justify-content-center', 'flex-nowrap', 'table-header-wrap');
+        btnHeader.textContent = text;
         wrap.textContent = text;
         th.style.color = '#B0B0B0';
-        th.style.cursor = 'pointer';
-        th.append(wrap);
+        if (text === 'Контакты' || text === 'Действия') {
+            th.append(wrap);
+            th.style.pointerEvents = 'none';
+        } else {
+            th.append(btnHeader);
+        }
         if (this.checkIconArrow(text)) {
-            this.addArrowIcon(wrap, 'url(./assets/img/arrow.svg)');
-            wrap.firstElementChild.id = 'arrow-sort';
-            wrap.firstElementChild.style.transition = '300ms';
+            this.addArrowIcon(btnHeader, 'url(./assets/img/arrow.svg)');
+            btnHeader.firstElementChild.id = 'arrow-sort';
+            btnHeader.firstElementChild.style.transition = '300ms';
         }
         if (text === 'Фамилия Имя Отчество') {
-            this.addAlphabetIcon(wrap,'url(./assets/img/alphabet.svg)');
+            this.addAlphabetIcon(btnHeader,'url(./assets/img/alphabet.svg)');
             th.id = 'client-fio-td';
         }
         if (text === 'ID') {

@@ -1,4 +1,5 @@
 import Validation from './Validation.js';
+import Fetch from './Fetch.js';
 
 export default class FormHandlers {
     static submitFormClient() {
@@ -38,7 +39,6 @@ export default class FormHandlers {
 
     static eventsInputActive(form) {
         const inputs = form.querySelectorAll('input');
-
         inputs.forEach((el) => {
             el.addEventListener('blur', (e) => {
                 const title = e.target.previousSibling;
@@ -56,6 +56,43 @@ export default class FormHandlers {
                 title.style.transform = 'translateY(0px)';
             })
         })
+    }
 
+    static searchClient(input) {
+        let timer;
+        input.addEventListener('input', function () {
+            if(timer) {
+                clearTimeout(timer);
+            }
+            timer = setTimeout(async () => {
+                const tableBody = document.querySelector('#table-body');
+                const tableRow = tableBody.querySelectorAll('tr');
+                if (!this.value) {
+                    tableRow.forEach((el) => {
+                        el.style.display = 'table-row';
+                    })
+                    return;
+                }
+                const clientData = await Fetch.searchClients(this.value);
+                if (clientData.length) {
+                    tableRow.forEach((row) => {
+                        const idCell = row.firstChild.firstChild.textContent;
+                        clientData.forEach((clientId, i) => {
+                            if (idCell === clientData[i].id) {
+                                row.style.display = 'table-row';
+                                console.log(row)
+                            } else {
+                                row.style.display = 'none';
+                            }
+                        })
+                        console.log(clientData)
+                    })
+                } else {
+                    tableRow.forEach((el) => {
+                        el.style.display = 'table-row';
+                    })
+                }
+            },500);
+        })
     }
 }

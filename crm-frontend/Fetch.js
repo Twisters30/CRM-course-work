@@ -69,7 +69,7 @@ export default class Fetch {
         }
     }
 
-    static async getClients() {
+    static async getClients(parse = false) {
         const requestOptions = {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
@@ -79,25 +79,29 @@ export default class Fetch {
             const response = await fetch(path.api + path.getListClient, requestOptions);
             if (response.status === (200 || 201)) {
                 UiEffects.removeLoader();
+                const data = await response.json();
+                if (parse) {
+                    return Helper.parseResponseClientList(data);
+                } else {
+                    return data;
+                }
+
             }
-            const data = await response.json();
-            return Helper.parseResponseClientList(data);
         } catch (error) {
             UiEffects.removeLoader();
             console.log(error, 'Не удалось добавить клиента');
         }
     }
 
-    static async searchClients() {
+    static async searchClients(inputValue) {
         const requestOptions = {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         };
         try {
-            const response = await fetch(path.api + path.getListClient + path.search + 'Maximov', requestOptions);
+            const response = await fetch(path.api + path.getListClient + path.search + inputValue, requestOptions);
             const data = await response.json();
-            console.log(data)
-            // return Helper.parseResponseClientList(data);
+            return Helper.parseResponseClientList(data);
         } catch (error) {
             console.log(error, 'Не удалось добавить клиента');
         }

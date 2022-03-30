@@ -20,7 +20,7 @@ export default class TableController {
         const btn = document.createElement('button');
         const icon = TableBody.createIcon('22', '16', variable.icons.addClient)
         icon.classList.add('mr-2')
-        btn.classList.add('btn', 'btn-outline-primary', 'd-flex', 'align-items-center', 'flex-row-reverse', 'm-auto');
+        btn.classList.add('btn', 'main-btn', 'd-flex', 'align-items-center', 'flex-row-reverse', 'm-auto');
         btn.textContent = btnText;
         btn.style.borderColor = '#9873FF';
         btn.style.padding = '12.5px 26.5px';
@@ -31,7 +31,7 @@ export default class TableController {
     }
 
     async createTable() {
-        const clients = await Fetch.getClients();
+        const clients = await Fetch.getClients(true);
         const container = BootstrapContainer.createContainer();
         const tagMain = document.createElement('main');
         const section = document.createElement('section');
@@ -53,7 +53,8 @@ export default class TableController {
         TableController.hideTable();
         Helper.titlePlugPage();
         TableSort.markByDefaultSort(document.querySelector('#client-id-td'));
-        Helper.arrowSortControl();
+        Helper.arrowSortControl()
+        Handlers.locationHashChanged(null);
         await Fetch.searchClients();
     }
 

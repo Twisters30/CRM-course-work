@@ -19,15 +19,10 @@ export default class Handlers {
                     const modalClient = new CreateClient(clientData);
                     const modalWrap = modalClient.createForm(app);
                     UiEffects.slideOut(modalWrap);
-                    Modal.createOverlayModal(app)
+                    Modal.createOverlayModal(app);
                 }
             }
         })
-    }
-
-    static closeOverlay() {
-        const modalOverlay = document.querySelector('#modal-overlay');
-        if (modalOverlay) modalOverlay.remove();
     }
 
     static closeModal(wrapModal) {
@@ -35,30 +30,30 @@ export default class Handlers {
         setTimeout(() => {
             wrapModal.remove();
         },200)
-        Handlers.closeOverlay();
+        Modal.closeOverlay();
     }
 
     static clickConfirmDelete(wrapModal, btnDeleteModal, clientId) {
         wrapModal.addEventListener('click', async (e) => {
             const target = e.target;
-            const idBtnDelete = `${ '#' + btnDeleteModal.id}`
+            const idBtnDelete = `${ '#' + btnDeleteModal.id}`;
             if (target.closest(idBtnDelete)) {
                 const status = await Fetch.deleteClient(clientId);
+                const modalClient = document.querySelector('.modal-form');
                 if (status === 200 || status === 201) {
-                    const clients = await Fetch.getClients();
+                    const clients = await Fetch.getClients(true);
                     TableController.refreshTable(clients);
                     TableController.hideTable();
                     Helper.titlePlugPage();
                     Handlers.closeModal(wrapModal);
-                    const modalClient = document.querySelector('.modal-form');
-                    if (modalClient) {
-                        Handlers.closeModal(modalClient);
-                    }
-                    console.log('удалён')
+
                 } else {
                     console.log(status, 'Ошибка при удалении');
                 }
-                Handlers.closeOverlay();
+                if (modalClient) {
+                    Handlers.closeModal(modalClient);
+                }
+                Modal.closeOverlay();
             }
         })
     }
@@ -74,6 +69,11 @@ export default class Handlers {
         handlerContainer.addEventListener('click', async (e) => {
             const target = e.target;
             if (target.closest(identificator)) {
+                const clientModal = document.querySelector('.modal-form');
+                if (clientModal) {
+                    clientModal.style.left = '20%';
+                    clientModal.style.pointerEvents = 'none';
+                }
                 const id = target.parentElement.parentElement.parentElement.querySelector('.id-client').id;
                 this.deleteClientInTable(id);
             }
@@ -102,7 +102,7 @@ export default class Handlers {
                     UiEffects.btnError(btnSubmit);
                 }
             }
-            const clients = await Fetch.getClients();
+            const clients = await Fetch.getClients(true);
             TableController.refreshTable(clients);
             TableController.hideTable();
             Helper.titlePlugPage();
@@ -139,14 +139,17 @@ export default class Handlers {
 
     static clickCloseModal(btn,modal) {
         btn.addEventListener('click', function () {
+            const clientModal = document.querySelector('.modal-form');
+            if (clientModal) {
+                clientModal.style.left = '50%';
+                clientModal.style.pointerEvents = 'visible';
+            }
             Handlers.closeModal(modal);
-            Handlers.closeOverlay();
         })
     }
 
     static clickShowDropdown(btn) {
         btn.addEventListener('click', function (e) {
-            console.log(e.target)
             if (e.target.closest('button') && this.querySelector('UL').style.display === 'none') {
                 this.querySelector('UL').style.display = 'flex';
                 e.target.nextSibling.nextSibling.style.transform = 'rotate(180deg)';
@@ -195,52 +198,70 @@ export default class Handlers {
 
     static clickTableSort(tableHeader) {
         tableHeader.addEventListener('click', async (e) => {
-            const clients = await Fetch.getClients();
+            const clients = await Fetch.getClients(true);
             const tableSort = new TableSort(clients);
             const target = e.target;
             const thNodes = tableHeader.firstChild.childNodes;
             if (target.closest('#client-id-td')) {
                 tableSort.sort('id',target.classList.contains('sorted'));
-                for (let i = 0; i < thNodes.length;i++) {
-                    if (thNodes[i].firstChild === target) {
-                        target.classList.toggle('sorted');
-                    } else {
-                        thNodes[i].firstChild.classList.remove('sorted');
-                    }
-                }
+                Helper.switchSortClass(target, thNodes);
                 Helper.arrowSortControl();
             } else if (target.closest('#client-fio-td')) {
                 tableSort.sort('fio',target.classList.contains('sorted'));
-                for (let i = 0; i < thNodes.length;i++) {
-                    if (thNodes[i].firstChild === target) {
-                        target.classList.toggle('sorted');
-                    } else {
-                        thNodes[i].firstChild.classList.remove('sorted');
-                    }
-                }
+                Helper.switchSortClass(target, thNodes);
                 Helper.arrowSortControl();
             } else  if (target.closest('#client-createdAt-td')) {
                 tableSort.sort('createdAt', target.classList.contains('sorted'));
-                for (let i = 0; i < thNodes.length;i++) {
-                    if (thNodes[i].firstChild === target) {
-                        target.classList.toggle('sorted');
-                    } else {
-                        thNodes[i].firstChild.classList.remove('sorted');
-                    }
-                }
+                Helper.switchSortClass(target, thNodes);
                 Helper.arrowSortControl();
             } else if (target.closest('#client-updatedAt-td')) {
                 tableSort.sort('updatedAt', target.classList.contains('sorted'));
-                for (let i = 0; i < thNodes.length;i++) {
-                    if (thNodes[i].firstChild === target) {
-                        target.classList.toggle('sorted');
-                    } else {
-                        thNodes[i].firstChild.classList.remove('sorted');
-                    }
-                }
+                Helper.switchSortClass(target, thNodes);
                 Helper.arrowSortControl();
             }
             TableController.refreshTable(clients);
         })
+    }
+
+    static clickCancelBtn(btn,modal) {
+        btn.addEventListener('click', () => {
+            Handlers.closeModal(modal);
+        })
+    }
+
+    static clickLinkHashUser(button, textField) {
+        button.addEventListener('click', function () {
+            textField.select();
+            document.execCommand("copy");
+            location.hash = `#${textField.textContent}`;
+            Handlers.locationHashChanged(textField.textContent);
+        })
+    }
+
+    static locationHashChanged(clientId) {
+        window.addEventListener('hashchange', async () =>  {
+            const app = document.querySelector('#app');
+            if (clientId) {
+                if (location.hash === `#${clientId}`) {
+                    const { clientData } = await Fetch.getClientData(clientId);
+                    const modalClient = new CreateClient(clientData);
+                    const modalWrap = modalClient.createForm(app);
+                    UiEffects.slideOut(modalWrap);
+                    Modal.createOverlayModal(app);
+                    console.log(123)
+                }
+            } else {
+                const clients = await Fetch.getClients(false);
+                clients.forEach((client) => {
+                    if (location.hash === `#${client.id}` && clientId) {
+                        console.log('321')
+                        const modalClient = new CreateClient(client);
+                        const modalWrap = modalClient.createForm(app);
+                        UiEffects.slideOut(modalWrap);
+                        Modal.createOverlayModal(app);
+                    }
+                })
+            }
+        });
     }
 }

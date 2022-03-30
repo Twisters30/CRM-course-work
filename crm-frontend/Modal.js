@@ -65,4 +65,13 @@ export default class Modal {
 
         return closeBtn;
     }
+
+    static closeOverlay() {
+        const modalOverlay = document.querySelector('#modal-overlay');
+        if (modalOverlay) {
+            modalOverlay.remove();
+            location.hash = '';
+            console.log(modalOverlay)
+        }
+    }
 }

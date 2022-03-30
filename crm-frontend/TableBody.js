@@ -9,7 +9,7 @@ export default class TableBody {
 
     createTableRow() {
         const tr = document.createElement('tr');
-        tr.classList.add('text-center');
+        tr.classList.add('table-row');
         return tr;
     }
 
@@ -34,6 +34,7 @@ export default class TableBody {
         icon.style.display = 'block';
         icon.style.backgroundImage = `url(${iconPath})`;
         icon.style.backgroundSize = '16px';
+        tooltip.style.transition = 'opacity 100ms';
         link.append(icon,tooltip);
         return link;
     }
@@ -65,7 +66,7 @@ export default class TableBody {
         td.classList.add('align-middle', 'bg-white');
         btnEdit.classList.add('btn', 'd-flex', 'flex-row-reverse', 'align-items-center', 'btn-edit');
         btnDelete.classList.add('btn', 'd-flex', 'flex-row-reverse', 'align-items-center', 'btn-delete');
-        wrap.classList.add('d-flex')
+        wrap.classList.add('d-flex', 'justify-content-center');
         btnEdit.textContent = btnEditText;
         btnDelete.textContent = btnDeleteText;
         btnEdit.append(TableBody.createIcon('14','12', path.icons.edit));
@@ -106,17 +107,25 @@ export default class TableBody {
         const span = document.createElement('span');
         const ul = document.createElement('ul');
         const wrap = document.createElement('div');
-        wrap.classList.add('d-flex');
+        wrap.classList.add('d-flex', 'justify-content-center');
+
         ul.classList.add('icons__list', 'd-flex');
         ul.id = 'contact-list';
         ul.style.listStyleType = 'none';
         td.classList.add('align-middle', 'bg-white');
 
         if (key === 'id') {
+            const textArea = document.createElement('textarea');
+            textArea.classList.add('d-flex', 'justify-content-center');
+            wrap.style.cursor = 'pointer';
+            textArea.id = 'id-client-field';
             wrap.textContent = value;
+            textArea.textContent = value;
             td.id = value;
             td.classList.add('id-client');
-        } ;
+            Handlers.clickLinkHashUser(wrap, textArea);
+            wrap.append(textArea);
+        }
         if (key === 'fio') wrap.textContent = value;
         if (key === 'createdAt' || key === 'updatedAt') {
             const time = value.split('-')[1];
@@ -130,6 +139,7 @@ export default class TableBody {
             this.createContactsCell(value,ul);
             wrap.append(ul);
         }
+        console.log()
         td.append(wrap);
         container.append(td);
     }

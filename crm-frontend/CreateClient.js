@@ -86,6 +86,7 @@ export default class CreateClient {
         li.classList.add('dropdown-item');
         li.style.cursor = 'pointer';
         li.style.padding = '10px 12px';
+        li.tabIndex = 2;
         li.textContent = text;
         return li;
     }
@@ -231,8 +232,8 @@ export default class CreateClient {
         Handlers.clickDeleteClient(btnDelete,'#btn-modal-delete');
         Handlers.clickCloseModal(closeBtn, container);
         Handlers.clickAddContact(btnAddContacts.querySelector('button'), listContacts);
+        Handlers.clickCancelBtn(btnBack, container);
         FormHandlers.eventsInputActive(form);
-
         if (this.client) {
             this.fillClientData(nameInput, lastNameInput, surnameInput, id, containerContacts);
             UiEffects.inputActive(form);

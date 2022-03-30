@@ -2,21 +2,26 @@
     font-size: 14px;
     line-height: 16px;
 }
+
 input {
     outline: none;
 }
+
 ul {
     margin: revert;
     list-style: none;
     padding: 0;
 }
+
 .input-search::-webkit-input-placeholder {
     color: #B0B0B0;
 }
+
 #app {
     background: #f5f5f5;
     min-height: 100vh;
 }
+
 .table thead th {
     border-top: none;
     border-bottom: none;
@@ -31,13 +36,58 @@ ul {
     position: absolute;
     top: -50%;
     left: 120%;
-    background: #5B46A9;
+    background: #333;
     color: #fafafa;
-    padding: 6px 10px 10px 10px;
-    border-radius: 6px;
+    padding: 7px 14px 8px;
     opacity: 0;
-    transform: translate(-48%, -125%);
+    transform: translate(-51%, -125%);
+    pointer-events: none;
+}
+
+.icon-tooltip {
+    opacity: .7;
+    transition: 200ms;
+}
+.icon-tooltip:hover {
+    opacity: 1;
+}
+
+.icon-tooltip::before {
+    content: '';
+    width: 0px;
+    height: 0px;
+    border: 6px solid;
+    border-color: transparent #333 transparent transparent;
+    position:absolute;
+    top: -8px;
+    left: -6px;
+    transform: rotate(-90deg);
+    opacity: 0;
+    transition: opacity 100ms;
+}
+
+.icon-tooltip:hover.icon-tooltip::before{
+    opacity: 1;
+}
+
+.main-btn {
     transition: 300ms;
+}
+
+.main-btn:hover {
+    background-color: white;
+}
+
+#id-client-field {
+    border: none;
+    resize: none;
+    opacity: 0;
+    pointer-events: none;
+    background-color: transparent;
+    font-size: 0;
+    line-height: 0;
+    padding: 0;
+    margin: 0;
 }
 
 .lds-ring {
@@ -62,15 +112,19 @@ ul {
     animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
     border-color: #9873FF transparent transparent transparent;
 }
+
 .lds-ring div:nth-child(1) {
     animation-delay: -0.45s;
 }
+
 .lds-ring div:nth-child(2) {
     animation-delay: -0.3s;
 }
+
 .lds-ring div:nth-child(3) {
     animation-delay: -0.15s;
 }
+
 @keyframes lds-ring {
     0% {
         transform: rotate(0deg);
@@ -79,3 +133,60 @@ ul {
         transform: rotate(360deg);
     }
 }
+
+.id-client > div {
+    font-size: 12px;
+    line-height: 16px;
+    color: #B0B0B0;
+}
+
+td > div  > span,
+td > div {
+    font-size: 14px;
+    line-height: 19px;
+}
+
+
+th {
+    padding:0!important;
+}
+.table-header-wrap,
+.table-header-btn {
+    width: 100%;
+    padding: 0 0 8px 0;
+    outline: none !important;
+    border: none;
+    background-color: transparent;
+    color: #B0B0B0;
+    font-size: 12px;
+    line-height: 16px;
+}
+.table-header-btn:hover,
+.table-header-btn:focus {
+    color: #9873FF;
+}
+
+.table-row {
+    height: 66px;
+    text-align: center;
+    transition: 150ms;
+}
+.table-row:hover {
+    -webkit-box-shadow: 0px 2px 8px -1px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 0px 2px 8px -1px rgba(34, 60, 80, 0.2);
+    box-shadow: 0px 2px 8px -1px rgba(34, 60, 80, 0.2);
+}
+.btn-delete > span,
+.btn-edit > span {
+    transition: 300ms;
+}
+
+.btn-delete:hover > span,
+.btn-edit:hover > span {
+    transform: scale(1.1);
+}
+
+/*.table-header-btn:active,*/
+/*.table-header-btn:focus {*/
+/*    outline: none !important;*/
+/*}*/
