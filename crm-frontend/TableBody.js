@@ -13,6 +13,35 @@ export default class TableBody {
         return tr;
     }
 
+    createTooltipCopy(options, parent) {
+        const icon = document.createElement('span');
+        const message = document.createElement('span');
+        const wrapTooltip = document.createElement('div');
+        const textArea = this.createTextArea(options.id);
+        message.textContent = options.message;
+        message.classList.add('tooltip-copy-message');
+        wrapTooltip.classList.add('tooltip-copy-wrapper');
+        wrapTooltip.append(icon, message,textArea);
+        Handlers.clickCopyLink(icon, textArea);
+
+        for (const [key, value] of Object.entries(options)) {
+            if (key === 'style') {
+                for (const [nameStyle, valueStyle] of Object.entries(value)) {
+                    icon[key][nameStyle] = valueStyle;
+                }
+            }
+            if (key === 'classList') {
+                console.log(key)
+                icon[key].add(value);
+            }
+        }
+        if (parent) {
+            parent.append(wrapTooltip);
+        } else {
+            return wrapTooltip;
+        }
+    }
+
     createIconContact(iconPath,value,type) {
         const link = document.createElement('a');
         const icon = document.createElement('span');
@@ -58,12 +87,12 @@ export default class TableBody {
         return icon;
     }
 
-    createBtnControl(btnEditText,btnDeleteText) {
+    createBtnControl(btnEditText,btnDeleteText, clientId) {
         const td = document.createElement('td');
         const btnEdit = document.createElement('button');
         const btnDelete = document.createElement('button');
         const wrap = document.createElement('div');
-        td.classList.add('align-middle', 'bg-white');
+        td.classList.add('align-middle', 'bg-white', 'position-relative');
         btnEdit.classList.add('btn', 'd-flex', 'flex-row-reverse', 'align-items-center', 'btn-edit');
         btnDelete.classList.add('btn', 'd-flex', 'flex-row-reverse', 'align-items-center', 'btn-delete');
         wrap.classList.add('d-flex', 'justify-content-center');
@@ -73,6 +102,19 @@ export default class TableBody {
         btnDelete.append(TableBody.createIcon('14','12', path.icons.delete));
         wrap.append(btnEdit,btnDelete);
         td.append(wrap);
+        this.createTooltipCopy({
+            message: 'Скопирован',
+            id: location.href + clientId,
+            classList: ['tooltip-icon-copy'],
+            style:{
+                width: '16px',
+                height: '16px',
+                backgroundImage: 'Url(./assets/img/copy-icon.svg)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: '16px',
+                display: 'block'
+            },
+        }, td)
         return td;
     }
 
@@ -102,6 +144,14 @@ export default class TableBody {
         UiEffects.hoverTooltip(ul);
     }
 
+    createTextArea(value) {
+        const textArea = document.createElement('textarea');
+        textArea.classList.add('d-flex', 'justify-content-center');
+        textArea.id = 'id-client-field';
+        textArea.textContent = value;
+        return textArea
+    }
+
     createCell(key,value,container) {
         const td = document.createElement('td');
         const span = document.createElement('span');
@@ -115,16 +165,9 @@ export default class TableBody {
         td.classList.add('align-middle', 'bg-white');
 
         if (key === 'id') {
-            const textArea = document.createElement('textarea');
-            textArea.classList.add('d-flex', 'justify-content-center');
-            wrap.style.cursor = 'pointer';
-            textArea.id = 'id-client-field';
             wrap.textContent = value;
-            textArea.textContent = value;
             td.id = value;
             td.classList.add('id-client');
-            Handlers.clickLinkHashUser(wrap, textArea);
-            wrap.append(textArea);
         }
         if (key === 'fio') wrap.textContent = value;
         if (key === 'createdAt' || key === 'updatedAt') {
@@ -139,7 +182,6 @@ export default class TableBody {
             this.createContactsCell(value,ul);
             wrap.append(ul);
         }
-        console.log()
         td.append(wrap);
         container.append(td);
     }
@@ -148,7 +190,7 @@ export default class TableBody {
         for (const [key, value] of Object.entries(client)) {
             this.createCell(key,value,container);
         }
-        container.append(this.createBtnControl('Изменить', 'Удалить'));
+        container.append(this.createBtnControl('Изменить', 'Удалить',client.id));
     }
 
     createTableBody() {
@@ -161,6 +203,7 @@ export default class TableBody {
         })
         Handlers.clickDeleteClient(tBody,'.btn-delete');
         Handlers.clickEditClient(tBody);
+        Handlers.addListenerHashChanged();
         return tBody;
     }
 }

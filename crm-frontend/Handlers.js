@@ -229,17 +229,37 @@ export default class Handlers {
         })
     }
 
-    static clickLinkHashUser(button, textField) {
+    static clickCopyLink(button, textField) {
         button.addEventListener('click', function () {
+            textField.focus();
             textField.select();
             document.execCommand("copy");
-            location.hash = `#${textField.textContent}`;
-            Handlers.locationHashChanged(textField.textContent);
+            button.nextSibling.classList.add('click');
+            setTimeout(() => {
+                button.nextSibling.classList.remove('click');
+            },300)
+            // location.hash = `#${textField.textContent}`;
+            // Handlers.locationHashChanged(textField.textContent);
+        })
+    }
+
+    static addListenerHashChanged() {
+        window.addEventListener('hashchange', async () => {
+            const clients = await Fetch.getClients(false);
+            const app = document.querySelector('#app');
+            clients.forEach((client) => {
+                if (location.hash === `#${client.id}`) {
+                    const modalClient = new CreateClient(client);
+                    const modalWrap = modalClient.createForm(app);
+                    UiEffects.slideOut(modalWrap);
+                    Modal.createOverlayModal(app);
+                }
+            })
         })
     }
 
     static locationHashChanged(clientId) {
-        window.addEventListener('hashchange', async () =>  {
+        window.addEventListener('hashchange', async function hashListener ()  {
             const app = document.querySelector('#app');
             if (clientId) {
                 if (location.hash === `#${clientId}`) {
@@ -248,19 +268,10 @@ export default class Handlers {
                     const modalWrap = modalClient.createForm(app);
                     UiEffects.slideOut(modalWrap);
                     Modal.createOverlayModal(app);
-                    console.log(123)
+                    window.removeEventListener('hashchange', hashListener);
                 }
             } else {
-                const clients = await Fetch.getClients(false);
-                clients.forEach((client) => {
-                    if (location.hash === `#${client.id}` && clientId) {
-                        console.log('321')
-                        const modalClient = new CreateClient(client);
-                        const modalWrap = modalClient.createForm(app);
-                        UiEffects.slideOut(modalWrap);
-                        Modal.createOverlayModal(app);
-                    }
-                })
+                console.log('Пустой id');
             }
         });
     }

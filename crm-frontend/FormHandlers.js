@@ -66,30 +66,35 @@ export default class FormHandlers {
             }
             timer = setTimeout(async () => {
                 const tableBody = document.querySelector('#table-body');
-                const tableRow = tableBody.querySelectorAll('tr');
+                const tableRow = tableBody.querySelectorAll('tr')
                 if (!this.value) {
                     tableRow.forEach((el) => {
-                        el.style.display = 'table-row';
+                        el.classList.remove('hide', 'highlight-sort');
+                        el.removeAttribute('data-search');
                     })
                     return;
                 }
                 const clientData = await Fetch.searchClients(this.value);
                 if (clientData.length) {
-                    tableRow.forEach((row) => {
-                        const idCell = row.firstChild.firstChild.textContent;
-                        clientData.forEach((clientId, i) => {
-                            if (idCell === clientData[i].id) {
-                                row.style.display = 'table-row';
-                                console.log(row)
-                            } else {
-                                row.style.display = 'none';
+                    tableRow.forEach((row,i) => {
+                        const idCell = row.querySelector('td').textContent;
+                        clientData.forEach((client) => {
+                            if (idCell === client.id) {
+                                row.setAttribute('data-search', 'true')
                             }
                         })
-                        console.log(clientData)
+                    })
+                    tableRow.forEach((ell) => {
+                        if (!ell.dataset.search) {
+                            ell.classList.add('hide')
+                        } else {
+                            ell.classList.add('highlight-sort');
+                        }
                     })
                 } else {
                     tableRow.forEach((el) => {
-                        el.style.display = 'table-row';
+                        el.classList.remove('hide', 'highlight-sort');
+                        el.removeAttribute('data-search')
                     })
                 }
             },500);

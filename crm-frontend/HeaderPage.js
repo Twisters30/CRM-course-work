@@ -31,8 +31,8 @@ export default class HeaderPage {
         searchInput.classList.add('input-search');
         container.classList.add('container');
         row.classList.add('row');
-        colLogo.classList.add('col-2');
-        colSearch.classList.add('col');
+        colLogo.classList.add('col');
+        colSearch.classList.add('col-sm-10');
         logoImg.classList.add('img-fluid');
         wrapHeaderContent.classList.add('d-flex', 'justify-content-start', 'align-items-center');
 

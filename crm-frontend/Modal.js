@@ -40,6 +40,8 @@ export default class Modal {
     }
 
     static createOverlayModal(container) {
+        const isHaveOverlay = document.querySelector('#modal-overlay');
+        if (isHaveOverlay) return;
         const overlay = document.createElement('div');
         overlay.classList.add('position-fixed');
         overlay.style.height = '100%';
@@ -54,7 +56,7 @@ export default class Modal {
 
     static closeModalBtn() {
         const closeBtn = document.createElement('button');
-        closeBtn.classList.add('btn', 'position-absolute');
+        closeBtn.classList.add('btn', 'position-absolute', 'btn-close-modal');
         closeBtn.style.top = '5%';
         closeBtn.style.right = '5%';
         closeBtn.style.width = '15px';
@@ -71,7 +73,6 @@ export default class Modal {
         if (modalOverlay) {
             modalOverlay.remove();
             location.hash = '';
-            console.log(modalOverlay)
         }
     }
 }

@@ -18,7 +18,7 @@ export default class CreateClient {
         const input = document.createElement('input');
 
         input.id = idInput;
-        input.style.width = '390px';
+        input.style.width = '100%';
         input.style.height = '100%';
         input.style.border = 'none';
         input.style.borderBottom = '1px solid #C8C5D1';
@@ -69,12 +69,12 @@ export default class CreateClient {
         wrapBtnIcon.classList.add('d-flex', 'align-items-center', 'justify-content-center', 'position-relative');
         wrapBtnIcon.style.transition = '300ms';
         wrapBtnIcon.id = 'btn-wrap-contacts';
-        icon.classList.add('d-block', 'position-absolute');
+        icon.classList.add('d-block', 'position-absolute','icon-add-contact');
         icon.style.width = '15px';
         icon.style.height = '15px';
         icon.style.left = '30%';
         icon.style.backgroundImage = `url(${path.folderBtns + path.icons.circleCross })`;
-        btnAddContact.classList.add('btn');
+        btnAddContact.classList.add('btn','btn-add-contact');
         btnAddContact.textContent = 'Добавить контакт';
         btnAddContact.style.transition = '300ms';
         wrapBtnIcon.append(icon, btnAddContact);
