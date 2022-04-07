@@ -1,6 +1,46 @@
 
 export default class Helper {
 
+    static createElement(options, parent) {
+        const element = document.createElement(options.element ? options.element : 'div');
+        for(const [key, value] of Object.entries(options)) {
+            if (key === 'classList') {
+                for (const className of value) {
+                    element[key].add(value);
+                }
+            } else if (key === 'style') {
+                for (const [nameStyle, valueStyle] of Object.entries(value)) {
+                    element[key][nameStyle] = valueStyle;
+                }
+            } else if (key === 'attributes') {
+                for (const [nameXlink, valueXlink] of Object.entries(value)) {
+                    element.setAttribute(`${nameXlink}:href`, valueXlink);
+                }
+            } else {
+                element[key] = value;
+            }
+        }
+        if (parent) {
+            parent.append(element);
+        } else {
+            return element;
+        }
+    }
+
+    static createSvg(path) {
+        const svg = this.createElement({
+            element: 'svg',
+            classList: ['svg-icon']
+        })
+        this.createElement({
+            element: 'use',
+            attributes: {
+                xlink: path
+            }
+        },svg)
+        return svg
+    }
+
     static parseDate(ell) {
         const date = new Date(ell)
         const day = `${(date.getDate() + 1) < 10 ? '0' +(date.getDate() + 1) : (date.getDate() + 1)}`;

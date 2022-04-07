@@ -31,7 +31,6 @@ export default class TableBody {
                 }
             }
             if (key === 'classList') {
-                console.log(key)
                 icon[key].add(value);
             }
         }
@@ -80,9 +79,8 @@ export default class TableBody {
         icon.style.display = 'block';
         icon.style.width = `${ width }px`;
         icon.style.height = `${ height }px`;
-        icon.style.backgroundPositionY = 'center';
-        icon.style.backgroundRepeat = 'no-repeat';
-        icon.style.backgroundImage = `url(${ path.folderBtns + pathIcon })`;
+        icon.style.background = `url(${ path.folderBtns + pathIcon }) center no-repeat`;
+        icon.style.pointerEvents = 'none';
         icon.classList.add('mr-1');
         return icon;
     }
@@ -104,16 +102,8 @@ export default class TableBody {
         td.append(wrap);
         this.createTooltipCopy({
             message: 'Скопирован',
-            id: location.href + clientId,
+            id: location.href.slice(-1) === '#' ? location.href + clientId : location.href  + '#' + clientId,
             classList: ['tooltip-icon-copy'],
-            style:{
-                width: '16px',
-                height: '16px',
-                backgroundImage: 'Url(./assets/img/copy-icon.svg)',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: '16px',
-                display: 'block'
-            },
         }, td)
         return td;
     }

@@ -1,9 +1,12 @@
 import Validation from './Validation.js';
 import Fetch from './Fetch.js';
+import TableController from './conrollers/TableController.js';
 
 export default class FormHandlers {
     static submitFormClient() {
-        Validation.clientForm();
+        if (!Validation.checkForm()) {
+            return null
+        }
         const inputName = document.querySelector('#input-name');
         const inputMiddleName = document.querySelector('#input-middleName');
         const inputFamily = document.querySelector('#input-family');
@@ -13,9 +16,10 @@ export default class FormHandlers {
         for(let i = 0; i < inputContacts.length;i++) {
             const attr = inputContacts[i].attributes;
             for(let k = 0; k < attr.length; k++) {
-                if (attr[k].name === 'style' || attr[k].name === 'class') {
+                if (attr[k].name === 'style' || attr[k].name === 'class' || attr[k].name === 'data-mask'|| attr[k].name === 'placeholder') {
                     continue;
                 } else {
+                    console.log(attr[k].name)
                     const typeAttr = attr[k].name.split('-')[1];
                     contacts.push({ type: typeAttr, value: inputContacts[i].value })
                 }
@@ -60,42 +64,18 @@ export default class FormHandlers {
 
     static searchClient(input) {
         let timer;
-        input.addEventListener('input', function () {
-            if(timer) {
-                clearTimeout(timer);
-            }
+        input.addEventListener('input', async function () {
+            clearTimeout(timer);
             timer = setTimeout(async () => {
-                const tableBody = document.querySelector('#table-body');
-                const tableRow = tableBody.querySelectorAll('tr')
                 if (!this.value) {
-                    tableRow.forEach((el) => {
-                        el.classList.remove('hide', 'highlight-sort');
-                        el.removeAttribute('data-search');
-                    })
+                    TableController.refreshTable(await Fetch.getClients(true));
                     return;
                 }
-                const clientData = await Fetch.searchClients(this.value);
-                if (clientData.length) {
-                    tableRow.forEach((row,i) => {
-                        const idCell = row.querySelector('td').textContent;
-                        clientData.forEach((client) => {
-                            if (idCell === client.id) {
-                                row.setAttribute('data-search', 'true')
-                            }
-                        })
-                    })
-                    tableRow.forEach((ell) => {
-                        if (!ell.dataset.search) {
-                            ell.classList.add('hide')
-                        } else {
-                            ell.classList.add('highlight-sort');
-                        }
-                    })
+                const clients = await Fetch.searchClients(this.value);
+                if (clients.length) {
+                    TableController.refreshTable(clients,true);
                 } else {
-                    tableRow.forEach((el) => {
-                        el.classList.remove('hide', 'highlight-sort');
-                        el.removeAttribute('data-search')
-                    })
+                    TableController.refreshTable(await Fetch.getClients(true));
                 }
             },500);
         })

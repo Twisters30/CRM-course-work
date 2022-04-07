@@ -54,6 +54,10 @@ export default class UiEffects {
         },500)
     }
 
+    static highlightTableRow(arr) {
+        arr.forEach((el) => el.classList.add('highlight-sort'));
+    }
+
     static loader(container = document.querySelector('#app')) {
         const loaderWrap = document.createElement('div');
         const div1 = document.createElement('div');

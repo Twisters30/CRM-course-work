@@ -6,6 +6,7 @@ import TableBody from './TableBody.js';
 import Helper from './Helper.js';
 import Modal from './Modal.js';
 import FormHandlers from './FormHandlers.js';
+import Validation from './Validation.js';
 
 export default class CreateClient {
     constructor(client) {
@@ -154,7 +155,7 @@ export default class CreateClient {
         wrapContact.classList.add('d-flex', 'align-items-center', 'justify-content-between');
         wrapContact.style.marginBottom = '25px';
         wrapContact.style.border = '1px solid #C8C5D1';
-        input.setAttribute(`data-${type}`, value || '+7921321321');
+        input.setAttribute(`data-${type}`, value || '');
         input.style.padding = '8px 12px';
         input.style.backgroundColor = '#f4f3f6';
         input.style.width = '100%';
@@ -163,6 +164,11 @@ export default class CreateClient {
         input.value = value;
         dropdown.querySelector('button').textContent = Helper.parseForBtnText(type);
         Handlers.clickDeleteContact(deleteContactBtn, sectionContacts);
+        if (type === 'phone' || type === 'addphone') {
+            input.setAttribute('data-mask', '+7 (000) 000-00-00');
+            input.placeholder = '+7 (___) ___‒__‒__';
+            Validation.phoneMask(input);
+        }
         wrapContact.append(dropdown, input, deleteContactBtn);
         sectionContacts.append(wrapContact);
     }
@@ -202,6 +208,7 @@ export default class CreateClient {
         const btnSaveClient = this.createMainBtnClient();
         const btnDelete = this.createBtnClient('Удалить клиента','btn-modal-delete');
         const btnBack = this.createBtnClient('Отмена','btn-client-cancel');
+        const validationContainer = Validation.createNotice();
 
         container.classList.add('position-fixed', 'modal-form');
         container.style.top = '-50%';
@@ -226,7 +233,7 @@ export default class CreateClient {
         form.addEventListener('submit', e => e.preventDefault());
         titleWrap.append(title,id);
         container.querySelector('.col').append(form);
-        form.append(titleWrap, surnameInput, nameInput, lastNameInput, closeBtn, containerContacts, btnSaveClient);
+        form.append(titleWrap, surnameInput, nameInput, lastNameInput, closeBtn, containerContacts,validationContainer, btnSaveClient);
         form.append(this.client ? btnDelete : btnBack);
         Handlers.clickSaveClientData(btnSaveClient.querySelector('button'),id);
         Handlers.clickDeleteClient(btnDelete,'#btn-modal-delete');

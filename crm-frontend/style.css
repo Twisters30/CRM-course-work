@@ -32,6 +32,20 @@ ul {
     position: relative;
 }
 
+.icon-add-client {
+    width: 22px;
+    height: 16px;
+    transition: all 300ms ease-in-out;
+    background-size: 22px 16px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjMiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAyMyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik0xNC41IDhDMTYuNzEgOCAxOC41IDYuMjEgMTguNSA0QzE4LjUgMS43OSAxNi43MSAwIDE0LjUgMEMxMi4yOSAwIDEwLjUgMS43OSAxMC41IDRDMTAuNSA2LjIxIDEyLjI5IDggMTQuNSA4Wk01LjUgNlYzSDMuNVY2SDAuNVY4SDMuNVYxMUg1LjVWOEg4LjVWNkg1LjVaTTE0LjUgMTBDMTEuODMgMTAgNi41IDExLjM0IDYuNSAxNFYxNkgyMi41VjE0QzIyLjUgMTEuMzQgMTcuMTcgMTAgMTQuNSAxMFoiIGZpbGw9IiM5ODczRkYiLz4NCjwvc3ZnPg0K")
+}
+
+.main-btn:hover .icon-add-client {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjMiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAyMyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik0xNC41IDhDMTYuNzEgOCAxOC41IDYuMjEgMTguNSA0QzE4LjUgMS43OSAxNi43MSAwIDE0LjUgMEMxMi4yOSAwIDEwLjUgMS43OSAxMC41IDRDMTAuNSA2LjIxIDEyLjI5IDggMTQuNSA4Wk01LjUgNlYzSDMuNVY2SDAuNVY4SDMuNVYxMUg1LjVWOEg4LjVWNkg1LjVaTTE0LjUgMTBDMTEuODMgMTAgNi41IDExLjM0IDYuNSAxNFYxNkgyMi41VjE0QzIyLjUgMTEuMzQgMTcuMTcgMTAgMTQuNSAxMFoiIGZpbGw9IiNmZmYiLz4NCjwvc3ZnPg0K")
+}
+
 .text-tooltip {
     position: absolute;
     top: -50%;
@@ -42,6 +56,8 @@ ul {
     opacity: 0;
     transform: translate(-51%, -125%);
     pointer-events: none;
+    z-index: 1;
+    white-space: nowrap;
 }
 
 .icon-tooltip {
@@ -71,11 +87,23 @@ ul {
 }
 
 .main-btn {
+    color: #9873FF;
     transition: 300ms;
+    padding: 12.5px 26.5px;
 }
 
 .main-btn:hover {
-    background-color: white;
+    color: #fff;
+    background-color: #B89EFF;
+}
+
+.main-btn:hover > span {
+    fill: #fff;
+}
+
+.main-btn:active {
+    color: #fff;
+    background-color: #8052FF;
 }
 
 #id-client-field {
@@ -145,10 +173,17 @@ td > div {
     line-height: 19px;
 }
 
+.validation {
+    display: block;
+    color: red;
+    text-align: center;
+    margin-bottom: 30px;
+}
 
 th {
     padding:0!important;
 }
+
 .table-header-wrap,
 .table-header-btn {
     width: 100%;
@@ -160,6 +195,7 @@ th {
     font-size: 12px;
     line-height: 16px;
 }
+
 .table-header-btn:hover,
 .table-header-btn:focus {
     color: #9873FF;
@@ -176,11 +212,13 @@ th {
     text-align: center;
     transition: 150ms;
 }
+
 .table-row:hover {
     -webkit-box-shadow: 0px 2px 8px -1px rgba(34, 60, 80, 0.2);
     -moz-box-shadow: 0px 2px 8px -1px rgba(34, 60, 80, 0.2);
     box-shadow: 0px 2px 8px -1px rgba(34, 60, 80, 0.2);
 }
+
 .btn-delete > span,
 .btn-edit > span {
     transition: 300ms;
@@ -189,6 +227,19 @@ th {
 .btn-delete:hover > span,
 .btn-edit:hover > span {
     transform: scale(1.1);
+}
+
+.btn-edit,
+.btn-delete {
+    transition: color 300ms ease-in;
+}
+
+.btn-edit:hover {
+    color: #9873FF;
+}
+
+.btn-delete:hover {
+    color: #F06A4D;
 }
 
 .hide {
@@ -200,13 +251,14 @@ th {
     flex-direction: column-reverse;
     position: absolute;
     padding-left: 20px;
-    top: 65%;
-    right: -25px;
+    top: 62%;
+    right: -40px;
     transform: translateY(calc(-50% - 7px));
 }
 
 .tooltip-copy-message {
     position: absolute;
+    top: 0;
     left: 55px;
     opacity: 0;
     visibility: hidden;
@@ -218,11 +270,19 @@ th {
 }
 
 .tooltip-icon-copy {
+    width: 30px;
+    height: 30px;
+    background: url("./assets/img/copy-icon.svg") center /16px no-repeat;
+    display: block;
     transition: all 300ms ease-in-out;
     transform: translateX(-100%);
     opacity: 0;
     visibility: hidden;
     cursor: pointer;
+}
+
+.tooltip-icon-copy:hover {
+    transform: scale(1.1) !important;
 }
 
 .table-row:hover td:last-child div:last-child span:first-child  {

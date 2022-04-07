@@ -5,7 +5,8 @@ import FormHandlers from './FormHandlers.js';
 import Fetch from './Fetch.js';
 import TableController from './conrollers/TableController.js';
 import UiEffects from './Ui-effects.js';
-import Modal from './Modal.js';
+import Modal from './Modal.js'
+import Validation from './Validation.js';
 
 export default class Handlers {
     static async clickEditClient(bodyTable) {
@@ -84,23 +85,27 @@ export default class Handlers {
         btnSubmit.addEventListener('click', async () => {
             const clientId = id.id;
             const clientData = FormHandlers.submitFormClient();
-            if (clientId) {
-                const statusCode = await Fetch.updateClient(clientData, clientId);
-                if (statusCode === 201 || statusCode  === 200) {
-                    UiEffects.btnSuccess(btnSubmit);
+            if (clientData) {
+                if (clientId) {
+                    const statusCode = await Fetch.updateClient(clientData, clientId);
+                    if (statusCode === 201 || statusCode  === 200) {
+                        UiEffects.btnSuccess(btnSubmit);
+                    } else {
+                        UiEffects.btnError(btnSubmit);
+                    }
                 } else {
-                    UiEffects.btnError(btnSubmit);
+                    const statusCode = await Fetch.postClient(clientData);
+                    if (statusCode === 201 || statusCode  === 200) {
+                        FormHandlers.clearForm();
+                        UiEffects.btnSuccess(btnSubmit);
+
+                    } else {
+                        console.log('Error status code', statusCode);
+                        UiEffects.btnError(btnSubmit);
+                    }
                 }
             } else {
-                const statusCode = await Fetch.postClient(clientData);
-                if (statusCode === 201 || statusCode  === 200) {
-                    FormHandlers.clearForm();
-                    UiEffects.btnSuccess(btnSubmit);
-
-                } else {
-                    console.log('Error status code', statusCode);
-                    UiEffects.btnError(btnSubmit);
-                }
+                return
             }
             const clients = await Fetch.getClients(true);
             TableController.refreshTable(clients);
@@ -189,6 +194,18 @@ export default class Handlers {
                         } else {
                             input.removeAttribute(attributes[i].name)
                         }
+                        if (dataText !== 'phone' || dataText !== 'addphone') {
+                            input.removeAttribute('data-mask');
+                            input.removeEventListener('input',Validation.maskInput);
+                            input.removeEventListener('focus',Validation.maskOutput);
+                            input.placeholder = '';
+                        }
+                        if(dataText === 'phone' || dataText === 'addphone') {
+                            input.addEventListener('input',Validation.maskInput);
+                            input.addEventListener('focus',Validation.maskOutput);
+                            input.placeholder = '+7 (000) 000-00-00';
+                            input.setAttribute(`data-mask`, `+7 (000) 000-00-00`);
+                        }
                     }
                 }
                 input.setAttribute(`data-${dataText}`, `${input.value}`);
@@ -231,15 +248,12 @@ export default class Handlers {
 
     static clickCopyLink(button, textField) {
         button.addEventListener('click', function () {
-            textField.focus();
             textField.select();
             document.execCommand("copy");
             button.nextSibling.classList.add('click');
             setTimeout(() => {
                 button.nextSibling.classList.remove('click');
             },300)
-            // location.hash = `#${textField.textContent}`;
-            // Handlers.locationHashChanged(textField.textContent);
         })
     }
 
@@ -256,23 +270,5 @@ export default class Handlers {
                 }
             })
         })
-    }
-
-    static locationHashChanged(clientId) {
-        window.addEventListener('hashchange', async function hashListener ()  {
-            const app = document.querySelector('#app');
-            if (clientId) {
-                if (location.hash === `#${clientId}`) {
-                    const { clientData } = await Fetch.getClientData(clientId);
-                    const modalClient = new CreateClient(clientData);
-                    const modalWrap = modalClient.createForm(app);
-                    UiEffects.slideOut(modalWrap);
-                    Modal.createOverlayModal(app);
-                    window.removeEventListener('hashchange', hashListener);
-                }
-            } else {
-                console.log('Пустой id');
-            }
-        });
     }
 }

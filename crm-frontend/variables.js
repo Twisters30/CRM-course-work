@@ -27,6 +27,7 @@ const dropdownContacts = ['Телефон', 'Доп. телефон', 'Email', '
 // Path for root icons
 const folder = './assets/contacts/';
 const folderBtns = './assets/img/';
+const folderSprite = './assets/sprites.svg#';
 
 // request
 const api = 'http://localhost:3000/';
@@ -49,5 +50,6 @@ export default {
     deleteClient,
     getClient,
     patchClient,
-    search
+    search,
+    folderSprite
 };

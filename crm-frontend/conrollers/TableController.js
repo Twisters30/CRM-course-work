@@ -1,6 +1,5 @@
 import TableHeader from '../TableHeader.js';
 import TableBody from '../TableBody.js';
-import variable from "../variables.js";
 import BootstrapContainer from '../BootstrapContainer.js';
 import Handlers from '../Handlers.js';
 import Fetch from '../Fetch.js';
@@ -18,13 +17,11 @@ export default class TableController {
 
     createBtnAddClient(btnText) {
         const btn = document.createElement('button');
-        const icon = TableBody.createIcon('22', '16', variable.icons.addClient)
-        icon.classList.add('mr-2')
+        const icon = document.createElement('span');
+        icon.classList.add('icon-add-client','mr-2')
         btn.classList.add('btn', 'main-btn', 'd-flex', 'align-items-center', 'flex-row-reverse', 'm-auto');
         btn.textContent = btnText;
         btn.style.borderColor = '#9873FF';
-        btn.style.padding = '12.5px 26.5px';
-        btn.style.color = '#9873FF';
         btn.append(icon);
         Handlers.clickCreateClient(btn);
         return btn;
@@ -53,16 +50,19 @@ export default class TableController {
         TableController.hideTable();
         Helper.titlePlugPage();
         TableSort.markByDefaultSort(document.querySelector('#client-id-td'));
-        Helper.arrowSortControl()
+        Helper.arrowSortControl();
         await Fetch.searchClients();
     }
 
-    static refreshTable(clients) {
+    static refreshTable(clients, isHighlight) {
         const tableBodyOld = document.querySelector('#table-body');
         const table = document.querySelector('#table-client');
         tableBodyOld.remove();
         const tableBody = new TableBody(clients);
         table.append(tableBody.createTableBody());
+        if (isHighlight) {
+            UiEffects.highlightTableRow(table.querySelector("tbody").querySelectorAll('tr'));
+        }
     }
 
     static hideTable() {
