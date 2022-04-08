@@ -358,8 +358,9 @@ th {
     .main-btn {
         position: fixed;
         left: 50%;
-        bottom: 30px;
+        bottom: 0;
         transform: translateX(-50%);
+        background: #ffffff;
     }
 }
 
@@ -403,5 +404,10 @@ th {
     }
     .icon-add-contact {
         left: 65px;
+    }
+
+    .main-btn {
+        width: 100%;
+        justify-content: center;
     }
 }
