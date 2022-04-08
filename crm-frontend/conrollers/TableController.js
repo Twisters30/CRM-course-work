@@ -21,7 +21,6 @@ export default class TableController {
         icon.classList.add('icon-add-client','mr-2')
         btn.classList.add('btn', 'main-btn', 'd-flex', 'align-items-center', 'flex-row-reverse', 'm-auto');
         btn.textContent = btnText;
-        btn.style.borderColor = '#9873FF';
         btn.append(icon);
         Handlers.clickCreateClient(btn);
         return btn;
@@ -43,7 +42,7 @@ export default class TableController {
         table.style.paddingBottom = '40px';
 
         table.append(tableHeader.createTitleTable(), tableHeader.createTableHeader(), tableBody.createTableBody());
-        container.querySelector('.col').append(table,icon);
+        container.querySelector('.wrapper-content').append(table,icon);
         tagMain.append(section);
         section.append(container);
         this.container.append(tagMain);

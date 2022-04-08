@@ -114,7 +114,6 @@ export default class TableBody {
                 const iconPath = `${ path.folder + path.icons.vk }`;
                 this.createListItem(ul, this.createIconContact(iconPath, el.value))
             } else if (el.type === 'facebook') {
-                console.log(el.type)
                 const iconPath = `${ path.folder + path.icons.fb }`;
                 this.createListItem(ul, this.createIconContact(iconPath, el.value))
             } else if (el.type === 'phone') {

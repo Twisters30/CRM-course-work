@@ -20,18 +20,6 @@ export default class UiEffects {
         },100)
     }
 
-    static onHoverScale(icon, bgColor) {
-        icon.addEventListener('mouseover', () => {
-            icon.style.transform = 'scale(1.2)';
-            icon.parentElement.classList.add(bgColor);
-            icon.parentElement.style.transition = '500ms';
-            icon.addEventListener('mouseleave', function () {
-                icon.style.transform = 'scale(1)';
-                icon.parentElement.classList.remove(bgColor);
-            })
-        })
-    }
-
     static btnSuccess(btn) {
         btn.classList.add('bg-success');
         setTimeout(() => {

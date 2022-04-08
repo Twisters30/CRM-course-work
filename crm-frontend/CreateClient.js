@@ -71,9 +71,6 @@ export default class CreateClient {
         wrapBtnIcon.style.transition = '300ms';
         wrapBtnIcon.id = 'btn-wrap-contacts';
         icon.classList.add('d-block', 'position-absolute','icon-add-contact');
-        icon.style.width = '15px';
-        icon.style.height = '15px';
-        icon.style.left = '30%';
         icon.style.backgroundImage = `url(${path.folderBtns + path.icons.circleCross })`;
         btnAddContact.classList.add('btn','btn-add-contact');
         btnAddContact.textContent = 'Добавить контакт';
@@ -130,18 +127,14 @@ export default class CreateClient {
     }
 
     crateBtnDeleteContact() {
-        const wrapCloseBtn = document.createElement('div');
-        const iconClose = TableBody.createIcon('16', '16', path.icons.cancelContacts);
-        iconClose.classList.add('btn', 'scale');
+        const wrapCloseBtn = document.createElement('button');
+        const iconClose = document.createElement('span');
+        iconClose.classList.add('scale', 'icon-delete-contact');
         iconClose.classList.remove('mr-1');
         iconClose.type = 'button';
-        iconClose.style.transition = '500ms';
-        wrapCloseBtn.classList.add('d-flex', 'align-items-center');
+        wrapCloseBtn.classList.add('d-flex', 'align-items-center', 'btn', 'btn-delete-contact');
         wrapCloseBtn.style.cursor = 'pointer';
         wrapCloseBtn.style.backgroundColor = '#e7e5eb';
-        iconClose.style.padding = '13px 8px';
-        iconClose.style.minHeight = '37px';
-        UiEffects.onHoverScale(iconClose, 'bg-danger');
         wrapCloseBtn.append(iconClose);
         return wrapCloseBtn;
     }
@@ -155,7 +148,7 @@ export default class CreateClient {
         wrapContact.classList.add('d-flex', 'align-items-center', 'justify-content-between');
         wrapContact.style.marginBottom = '25px';
         wrapContact.style.border = '1px solid #C8C5D1';
-        input.setAttribute(`data-${type}`, value || '');
+        input.setAttribute(`data-${type}`, value || 'test');
         input.style.padding = '8px 12px';
         input.style.backgroundColor = '#f4f3f6';
         input.style.width = '100%';

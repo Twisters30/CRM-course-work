@@ -3,14 +3,11 @@ import Helper from './Helper.js';
 
 export default class Validation {
     static checkForm() {
-        const inputs = document.querySelector('#form-client').querySelectorAll('input');
         const validationContainer = document.querySelector('.validation');
         let arrError = [];
-        inputs.forEach((el) => {
-            const resultCheckFio = Validation.checkValueFio(el);
-            if (resultCheckFio) arrError.push(resultCheckFio);
-        })
+        const resultCheckFio = Validation.checkValueFio();
         const resultCheckContacts = Validation.checkContactsInput();
+        arrError = [...resultCheckFio, ...resultCheckContacts];
         if (arrError.length) {
             arrError.forEach((el) => UiEffects.highlightInput(el));
             return false;
@@ -27,52 +24,66 @@ export default class Validation {
         return validation;
     }
 
-    static checkValueFio(el) {
-        if (!el.getAttribute('data')) return null;
-        const validationContainer = document.querySelector('.validation');
-        if (el.value === '' && el.id !== 'input-middleName') {
-            validationContainer.textContent = `заполните ${el.parentElement.textContent.split('*')[0]}`;
-            return el;
-        }
-        if (el.value.search(/\d/) !== -1 && el.id === 'input-family') {
-            validationContainer.textContent =  `${el.parentElement.textContent.split('*')[0]} не должна содержать цифры`;
-            return el
-        } else if (el.value.search(/\d/) !== -1 &&  el.id === 'input-name') {
-            validationContainer.textContent = `${el.parentElement.textContent.split('*')[0]} не должно содержать цифры`;
-            return el
-        }
-        if (el.value.length > 20) {
-            validationContainer.textContent = `${el.parentElement.textContent.split('*')[0]} превышает кол-во символов (20)`;
-            return false
-        }
-        if (!el.value.includes('@') && el.dataset === 'email') {
-            return el
-        }
-        return null;
+    static checkValueFio() {
+        const inputs = document.querySelector('#form-client').querySelectorAll('input');
+        let contactInputs = [];
+            inputs.forEach((el) => {
+                if (!el.classList.contains('input-contact')) {
+                    contactInputs.push(el)
+                }
+        })
+        const error = [];
+        contactInputs.forEach((el) => {
+            const validationContainer = document.querySelector('.validation');
+            if (el.value === '' && el.id !== 'input-middleName') {
+                validationContainer.textContent = `заполните поле имя`;
+                error.push(el);
+            }
+            if (el.value.search(/\d/) !== -1 && el.id === 'input-family') {
+                validationContainer.textContent =  `фамилия не должна содержать цифры`;
+                error.push(el);
+            }
+            if (el.value.search(/\d/) !== -1 &&  el.id === 'input-name') {
+                validationContainer.textContent = `отчество не должно содержать цифры`;
+                error.push(el);
+            }
+            if (el.value.length > 20) {
+                validationContainer.textContent = `${el.parentElement.textContent.split('*')[0].toLowerCase()} превышает кол-во символов (20)`;
+                error.push(el);
+            }
+        })
+        return error;
     }
 
     static checkContactsInput() {
         const contactsInputs = document.querySelector('#contacts-list').querySelectorAll("input");
+        const validationContainer = document.querySelector('.validation');
+        const error = [];
         contactsInputs.forEach((el) => {
-            console.log(el.value)
             if (el.dataset.email) {
-                console.log(el.dataset)
-            } else if (el.dataset.phone) {
-                // this.phoneMask(el)
-                console.log(el.dataset)
+                const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!el.value.match(pattern)) {
+                    error.push(el);
+                    validationContainer.textContent = `ошибка email`;
+                }
+            }
+            if (el.dataset.phone || el.dataset.addphone) {
+                if (el.value.length < 18) {
+                    console.log('err', el)
+                    validationContainer.textContent = `короткий номер`;
+                    error.push(el);
+                }
             }
         })
-        // if (!el.getAttribute('data')) return null;
-        // const validationContainer = document.querySelector('.validation');
-        // if (el.getAttribute('data') === 'email') {
-        //
-        // }
+        return error;
     }
 
-    static phoneMask(input) {
-        input.addEventListener('focus', this.maskOutput)
-        input.addEventListener('input', this.maskInput)
-
+    static phoneMask(input, isRemove) {
+        if (isRemove) {
+            input.removeEventListener('input', this.maskInput)
+        } else {
+            input.addEventListener('input', this.maskInput)
+        }
     }
     static maskInput() {
         let literalPattern = /[0\*]/;
@@ -98,10 +109,5 @@ export default class Validation {
         }
 
         this.value = newValue;
-    }
-    static maskOutput() {
-        if ((this.value.length - 7) < 11) {
-            this.value = '';
-        }
     }
 }

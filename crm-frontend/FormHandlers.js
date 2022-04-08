@@ -19,7 +19,6 @@ export default class FormHandlers {
                 if (attr[k].name === 'style' || attr[k].name === 'class' || attr[k].name === 'data-mask'|| attr[k].name === 'placeholder') {
                     continue;
                 } else {
-                    console.log(attr[k].name)
                     const typeAttr = attr[k].name.split('-')[1];
                     contacts.push({ type: typeAttr, value: inputContacts[i].value })
                 }

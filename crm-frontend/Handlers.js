@@ -196,19 +196,17 @@ export default class Handlers {
                         }
                         if (dataText !== 'phone' || dataText !== 'addphone') {
                             input.removeAttribute('data-mask');
-                            input.removeEventListener('input',Validation.maskInput);
-                            input.removeEventListener('focus',Validation.maskOutput);
+                            Validation.phoneMask(input,true);
                             input.placeholder = '';
                         }
                         if(dataText === 'phone' || dataText === 'addphone') {
-                            input.addEventListener('input',Validation.maskInput);
-                            input.addEventListener('focus',Validation.maskOutput);
+                            Validation.phoneMask(input);
                             input.placeholder = '+7 (000) 000-00-00';
                             input.setAttribute(`data-mask`, `+7 (000) 000-00-00`);
                         }
                     }
                 }
-                input.setAttribute(`data-${dataText}`, `${input.value}`);
+                input.setAttribute(`data-${dataText}`, `${input.value ? input.value : 'test'}`);
             }
         })
     }
